@@ -43,6 +43,15 @@ export function Notifications() {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await notificationService.deleteNotification(id);
+      setNotifications(prev => prev.filter(n => n._id !== id));
+    } catch (err) {
+      console.error("Failed to delete notification", err);
+    }
+  };
+
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   return (
@@ -127,14 +136,24 @@ export function Notifications() {
                   </p>
                   
                   {/* Actions */}
-                  {!notif.isRead && (
+                  <div className="flex items-center gap-3 mt-2">
+                    {!notif.isRead && (
+                      <button 
+                        onClick={() => handleMarkAsRead(notif._id)} 
+                        className="text-xs font-medium text-primary hover:text-white transition-colors bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded"
+                      >
+                        Mark as Read
+                      </button>
+                    )}
                     <button 
-                      onClick={() => handleMarkAsRead(notif._id)} 
-                      className="text-xs font-medium text-primary hover:text-white transition-colors bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded"
+                      onClick={() => handleDelete(notif._id)}
+                      className="text-xs font-medium text-outline hover:text-red-400 transition-colors bg-surface-container-low hover:bg-red-500/10 px-3 py-1.5 rounded border border-outline-variant/50 hover:border-red-500/20 flex items-center gap-1 opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      title="Delete Notification"
                     >
-                      Mark as Read
+                      <span className="material-symbols-outlined text-[14px]">delete</span>
+                      Delete
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
             ))}

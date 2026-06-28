@@ -14,16 +14,16 @@ export function MarketingLayout() {
         <div className="max-w-[1200px] mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform shadow-lg shadow-accent/20">
-              <span className="material-symbols-outlined text-white text-[20px]">shield_spark</span>
+              <span className="material-symbols-outlined text-white text-[20px]">monitor_heart</span>
             </div>
             <span className="text-xl font-headline font-bold tracking-tight">DevAlive</span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <Link to="/features" className="text-on-surface-variant hover:text-white transition-colors">Features</Link>
-            <Link to="/how-it-works" className="text-on-surface-variant hover:text-white transition-colors">How it Works</Link>
-            <Link to="/pricing" className="text-on-surface-variant hover:text-white transition-colors">Pricing</Link>
+            <a href="/#features" className="text-on-surface-variant hover:text-white transition-colors">Features</a>
+            <a href="/#how-it-works" className="text-on-surface-variant hover:text-white transition-colors">How it Works</a>
+            <a href="/#pricing" className="text-on-surface-variant hover:text-white transition-colors">Pricing</a>
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
@@ -52,9 +52,9 @@ export function MarketingLayout() {
         {/* Mobile Nav */}
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-border bg-card px-6 py-4 flex flex-col gap-4 shadow-2xl absolute w-full">
-            <Link to="/features" className="text-on-surface-variant hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>Features</Link>
-            <Link to="/how-it-works" className="text-on-surface-variant hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>How it Works</Link>
-            <Link to="/pricing" className="text-on-surface-variant hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
+            <a href="/#features" className="text-on-surface-variant hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>Features</a>
+            <a href="/#how-it-works" className="text-on-surface-variant hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>How it Works</a>
+            <a href="/#pricing" className="text-on-surface-variant hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>Pricing</a>
             <hr className="border-border my-2" />
             {isAuthenticated ? (
               <Link to="/dashboard" className="text-accent font-semibold" onClick={() => setIsMobileMenuOpen(false)}>Go to Dashboard</Link>
@@ -75,8 +75,8 @@ export function MarketingLayout() {
       {/* Footer */}
       <footer className="border-t border-border mt-auto py-12 text-center text-on-surface-variant text-sm">
         <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 opacity-50">
-             <span className="material-symbols-outlined text-[16px]">shield_spark</span>
+          <div className="flex items-center justify-center gap-2 mb-4 opacity-50">
+             <span className="material-symbols-outlined text-[16px]">monitor_heart</span>
              <span className="font-headline font-bold tracking-widest uppercase">DevAlive</span>
           </div>
           <p>© {new Date().getFullYear()} DevAlive. All rights reserved.</p>

@@ -7,6 +7,7 @@ import { cn } from '../../utils/utils.js';
 export function Analytics() {
   const { projects, fetchProjects } = useProjectStore();
   const [chartData, setChartData] = useState([]);
+  const [insights, setInsights] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState('all');
 
@@ -27,19 +28,28 @@ export function Analytics() {
         }
 
         const data = await analyticsService.getUptimeChartData(projectId, 7);
-        const { labels, datasets } = data.data.chartData;
+        const insightsData = await analyticsService.getProjectAnalytics(projectId);
         
-        const formattedData = labels.map((label, index) => {
-          const dataPoint = { name: label };
-          datasets.forEach(dataset => {
-            dataPoint[dataset.label] = dataset.data[index];
-          });
-          return dataPoint;
-        });
+        // Backend returns: data.data.chartData = [{ timestamp, responseTime, status }, ...]
+        
+        const chartDataArray = data.data.chartData;
+        if (!Array.isArray(chartDataArray) || chartDataArray.length === 0) {
+          setChartData([]);
+          setInsights(insightsData.data);
+          setIsLoading(false);
+          return;
+        }
+
+        const formattedData = chartDataArray.map(log => ({
+          name: new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          'Response Time': log.responseTime || 0,
+        }));
         
         setChartData(formattedData);
+        setInsights(insightsData.data);
       } catch (err) {
         console.error("Failed to load chart data", err);
+        setChartData([]);
       } finally {
         setIsLoading(false);
       }
@@ -51,16 +61,16 @@ export function Analytics() {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-surface-container-high border border-outline-variant p-4 rounded-xl shadow-2xl">
+        <div className="bg-surface-container-high/80 backdrop-blur-md border border-outline-variant p-4 rounded-xl shadow-2xl">
           <p className="text-on-surface-variant font-label-sm mb-3 text-xs">{label}</p>
           {payload.map((entry, index) => (
-            <div key={index} className="flex items-center gap-4 justify-between">
+            <div key={index} className="flex items-center gap-6 justify-between">
               <span className="flex items-center gap-2 text-sm font-medium text-white">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }}></span>
                 {entry.name}
               </span>
               <span className="font-headline font-bold" style={{ color: entry.color }}>
-                {entry.value}%
+                {entry.value}ms
               </span>
             </div>
           ))}
@@ -71,43 +81,121 @@ export function Analytics() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+      {/* Header & Controls */}
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="font-headline font-bold text-2xl text-on-surface tracking-tight mb-1">Performance Analytics</h2>
+          <h2 className="font-headline font-bold text-3xl text-white tracking-tight mb-1">Performance Analytics</h2>
           <p className="text-on-surface-variant text-sm">Visualize your project's historical uptime and latencies.</p>
         </div>
         
-        <div className="relative">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">folder</span>
-          <select 
-            className="w-full sm:w-64 bg-surface-container-low border border-outline-variant text-white text-sm font-medium rounded-lg pl-10 pr-10 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none appearance-none cursor-pointer hover:bg-surface-container-high"
-            value={selectedProject}
-            onChange={(e) => setSelectedProject(e.target.value)}
-          >
-            <option value="all">Select a Project...</option>
-            {projects.map(p => (
-              <option key={p._id} value={p._id}>{p.projectName}</option>
-            ))}
-          </select>
-          <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">expand_more</span>
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          {/* Project Selector */}
+          <div className="relative flex-1 md:w-64">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">folder</span>
+            <select 
+              className="w-full bg-surface-container-low border border-outline-variant text-white text-sm font-medium rounded-lg pl-10 pr-10 py-2.5 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none appearance-none cursor-pointer hover:bg-surface-container-high shadow-sm"
+              value={selectedProject}
+              onChange={(e) => setSelectedProject(e.target.value)}
+            >
+              <option value="all" disabled>Select a Project...</option>
+              {projects.map(p => (
+                <option key={p._id} value={p._id}>{p.projectName}</option>
+              ))}
+            </select>
+            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">expand_more</span>
+          </div>
         </div>
       </header>
 
+      {/* Top Row: Summary Insights (KPIs) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Uptime KPI */}
+        <div className="bg-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-emerald-500/30 transition-colors shadow-sm">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors"></div>
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-inner">
+               <span className="material-symbols-outlined text-[20px]">verified</span>
+            </div>
+            {!isLoading && insights && (
+               <span className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">7d Avg</span>
+            )}
+          </div>
+          <div>
+            <h4 className="text-on-surface-variant font-medium text-sm mb-1">Average Uptime</h4>
+            <div className="text-3xl font-headline font-bold text-white">
+               {isLoading ? (
+                  <div className="h-8 w-24 bg-surface-container-highest rounded animate-pulse mt-1"></div>
+               ) : (
+                  `${insights?.uptimePercentage || 0}%`
+               )}
+            </div>
+          </div>
+        </div>
+
+        {/* Latency KPI */}
+        <div className="bg-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-primary/30 transition-colors shadow-sm">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-primary/10 transition-colors"></div>
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shadow-inner">
+               <span className="material-symbols-outlined text-[20px]">speed</span>
+            </div>
+             {!isLoading && insights && (
+               <span className="px-2 py-1 rounded-md bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider border border-primary/20">Global</span>
+            )}
+          </div>
+          <div>
+            <h4 className="text-on-surface-variant font-medium text-sm mb-1">Average Latency</h4>
+            <div className="text-3xl font-headline font-bold text-white">
+              {isLoading ? (
+                  <div className="h-8 w-24 bg-surface-container-highest rounded animate-pulse mt-1"></div>
+               ) : (
+                  `${Math.round(insights?.averageResponseTime) || 0}ms`
+               )}
+            </div>
+          </div>
+        </div>
+
+        {/* Checks KPI */}
+        <div className="bg-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-secondary/30 transition-colors shadow-sm">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-secondary/10 transition-colors"></div>
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center border border-secondary/20 shadow-inner">
+               <span className="material-symbols-outlined text-[20px]">fact_check</span>
+            </div>
+          </div>
+          <div>
+            <h4 className="text-on-surface-variant font-medium text-sm mb-1">Total Pings</h4>
+            <div className="text-3xl font-headline font-bold text-white flex items-baseline gap-2">
+               {isLoading ? (
+                  <div className="h-8 w-24 bg-surface-container-highest rounded animate-pulse mt-1"></div>
+               ) : (
+                  <>
+                    {insights?.totalChecks || 0}
+                    {insights?.failedChecks > 0 && (
+                      <span className="text-sm font-medium text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                        {insights.failedChecks} Failed
+                      </span>
+                    )}
+                  </>
+               )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Chart Section */}
       <section className="bg-surface-container rounded-xl border border-outline-variant overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between bg-surface-container-low gap-4">
+        <div className="p-5 border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between bg-surface-container-low gap-4">
           <h3 className="font-headline text-lg font-semibold flex items-center gap-2 text-white">
-            <span className="material-symbols-outlined text-primary text-[20px]">ssid_chart</span>
-            Uptime (Last 7 Days)
+            <span className="material-symbols-outlined text-primary text-[20px]">timeline</span>
+            Response Time
           </h3>
           <div className="flex items-center gap-3">
-            <div className="flex bg-surface-container-highest p-0.5 rounded-lg border border-outline-variant">
-              <button className="px-3 py-1 bg-surface-container-low text-on-surface rounded-md text-xs font-medium shadow-sm">7d</button>
-              <button className="px-3 py-1 text-on-surface-variant text-xs font-medium hover:text-on-surface transition-colors cursor-not-allowed opacity-50">30d</button>
-              <button className="px-3 py-1 text-on-surface-variant text-xs font-medium hover:text-on-surface transition-colors cursor-not-allowed opacity-50">90d</button>
-            </div>
+             <div className="px-3 py-1.5 bg-surface-container-highest text-on-surface-variant border border-outline-variant/50 rounded-lg text-xs font-medium shadow-sm flex items-center gap-1.5">
+               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+               Last 7 Days
+             </div>
           </div>
         </div>
 
@@ -126,75 +214,46 @@ export function Analytics() {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
                 <defs>
-                  <linearGradient id="colorUptime" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4edea3" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#4edea3" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorAlt" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#c0c1ff" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#c0c1ff" stopOpacity={0}/>
+                  <linearGradient id="colorLatency" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="4 4" stroke="#2a2a2d" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2d" vertical={false} opacity={0.5} />
                 <XAxis 
                   dataKey="name" 
                   stroke="#908fa0" 
                   fontSize={11} 
                   tickLine={false} 
                   axisLine={false} 
-                  dy={10}
+                  dy={15}
+                  minTickGap={30}
                 />
                 <YAxis 
                   stroke="#908fa0" 
                   fontSize={11} 
                   tickLine={false} 
                   axisLine={false} 
-                  tickFormatter={(value) => `${value}%`} 
-                  dx={-10}
+                  tickFormatter={(value) => `${value}ms`} 
+                  dx={-15}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#464554', strokeWidth: 1, strokeDasharray: '4 4' }} />
                 
-                {Object.keys(chartData[0] || {}).filter(key => key !== 'name').map((key, i) => (
-                  <Area 
-                    key={key} 
-                    type="monotone" 
-                    dataKey={key} 
-                    stroke={i === 0 ? "#4edea3" : "#c0c1ff"} 
-                    strokeWidth={3}
-                    fillOpacity={1} 
-                    fill={`url(#${i === 0 ? 'colorUptime' : 'colorAlt'})`}
-                    activeDot={{ r: 6, fill: i === 0 ? "#4edea3" : "#c0c1ff", stroke: '#131316', strokeWidth: 2 }}
-                  />
-                ))}
+                <Area 
+                  type="monotone" 
+                  dataKey="Response Time" 
+                  stroke="#818cf8" 
+                  strokeWidth={3}
+                  fillOpacity={1} 
+                  fill="url(#colorLatency)"
+                  activeDot={{ r: 6, fill: "#818cf8", stroke: '#131316', strokeWidth: 3 }}
+                  animationDuration={1500}
+                />
               </AreaChart>
             </ResponsiveContainer>
           )}
         </div>
       </section>
-
-      {/* Summary Insights */}
-      {!isLoading && chartData.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-surface-container-low border border-outline-variant p-6 rounded-xl flex gap-4 items-start">
-            <div className="w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
-               <span className="material-symbols-outlined text-[20px]">thumb_up</span>
-            </div>
-            <div>
-              <h4 className="text-white font-medium mb-1">Excellent Reliability</h4>
-              <p className="text-sm text-on-surface-variant leading-relaxed">This project has maintained consistent uptime over the last 7 days. No significant outages detected during peak hours.</p>
-            </div>
-          </div>
-          <div className="bg-surface-container-low border border-outline-variant p-6 rounded-xl flex gap-4 items-start">
-            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-               <span className="material-symbols-outlined text-[20px]">lightbulb</span>
-            </div>
-            <div>
-              <h4 className="text-white font-medium mb-1">Optimization Tip</h4>
-              <p className="text-sm text-on-surface-variant leading-relaxed">Consider enabling detailed regional tracing in Settings to get deeper insights into latency spikes.</p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -16,13 +16,13 @@ export const createProjectValidator = [
     .withMessage('Invalid project type'),
   body('monitoringInterval')
     .optional()
-    .isIn([5, 10, 15, 30, 60])
-    .withMessage('Interval must be 5, 10, 15, 30, or 60 minutes'),
+    .isIn([1, 5, 10, 15, 30, 60, 300, 720, 1440, 7200])
+    .withMessage('Invalid interval value'),
 ];
 
 export const updateProjectValidator = [
   body('projectName').optional().isString().notEmpty(),
   body('endpointUrl').optional().isURL({ require_protocol: true }),
   body('projectType').optional().isIn(['website', 'api', 'backend', 'health-endpoint']),
-  body('monitoringInterval').optional().isIn([5, 10, 15, 30, 60]),
+  body('monitoringInterval').optional().isIn([1, 5, 10, 15, 30, 60, 300, 720, 1440, 7200]),
 ];

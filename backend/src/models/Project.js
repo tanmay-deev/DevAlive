@@ -27,7 +27,7 @@ const projectSchema = new mongoose.Schema({
   },
   monitoringInterval: {
     type: Number,
-    enum: [5, 10, 15, 30, 60],
+    enum: [1, 5, 10, 15, 30, 60, 300, 720, 1440, 7200],
     default: 15,
   },
   monitoringEnabled: {

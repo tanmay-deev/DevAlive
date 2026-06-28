@@ -52,3 +52,7 @@ input[type="checkbox"]:checked {
   background-color: #6366F1;
   border-color: #6366F1;
 }
+html {
+  scroll-behavior: smooth;
+}  
+ 

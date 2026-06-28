@@ -1,6 +1,8 @@
 import Project from '../models/Project.js';
 import MonitoringLog from '../models/MonitoringLog.js';
 
+import Notification from '../models/Notification.js';
+
 class AnalyticsService {
   async getDashboardSummary(userId) {
     const projects = await Project.find({ userId });
@@ -28,11 +30,14 @@ class AnalyticsService {
       ? Number((totalUptime / projectsWithUptime).toFixed(2)) 
       : 100;
 
+    const unreadAlerts = await Notification.countDocuments({ userId, isRead: false });
+
     return {
       totalProjects,
       onlineProjects,
       offlineProjects,
-      averageUptime
+      averageUptime,
+      unreadAlerts
     };
   }
 

@@ -60,9 +60,9 @@ class MonitoringService {
     
     const newStatus = isSuccess ? 'online' : (log.status === 'timeout' ? 'degraded' : 'offline');
     
-    // Check if status changed from online to offline, or offline to online
-    if (project.currentStatus !== 'unknown' && project.currentStatus !== newStatus) {
-      if (!isSuccess && project.currentStatus === 'online') {
+    // Check if status changed
+    if (project.currentStatus !== newStatus) {
+      if (!isSuccess && (project.currentStatus === 'online' || project.currentStatus === 'unknown')) {
         await notificationService.triggerAlert(project, 'downtime');
       } else if (isSuccess && (project.currentStatus === 'offline' || project.currentStatus === 'degraded')) {
         await notificationService.triggerAlert(project, 'recovery');

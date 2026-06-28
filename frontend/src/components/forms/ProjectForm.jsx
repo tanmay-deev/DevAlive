@@ -3,15 +3,24 @@ import { Input } from '../ui/Input.jsx';
 import { Button } from '../ui/Button.jsx';
 import useProjectStore from '../../store/projectStore.js';
 
-export function ProjectForm({ onSuccess, onCancel }) {
-  const [projectName, setProjectName] = useState('');
-  const [endpointUrl, setEndpointUrl] = useState('');
-  const [monitoringInterval, setMonitoringInterval] = useState(15);
-  const { addProject, isLoading, error } = useProjectStore();
+export function ProjectForm({ onSuccess, onCancel, initialData = null }) {
+  const [projectName, setProjectName] = useState(initialData?.projectName || '');
+  const [endpointUrl, setEndpointUrl] = useState(initialData?.endpointUrl || '');
+  const [monitoringInterval, setMonitoringInterval] = useState(initialData?.monitoringInterval || 15);
+  const { addProject, editProject, isLoading, error } = useProjectStore();
+
+  const isEditing = !!initialData;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await addProject({ projectName, endpointUrl, monitoringInterval });
+    
+    let success = false;
+    if (isEditing) {
+      success = await editProject(initialData._id, { projectName, endpointUrl, monitoringInterval });
+    } else {
+      success = await addProject({ projectName, endpointUrl, monitoringInterval });
+    }
+    
     if (success && onSuccess) {
       onSuccess();
     }
@@ -54,17 +63,22 @@ export function ProjectForm({ onSuccess, onCancel }) {
           value={monitoringInterval}
           onChange={(e) => setMonitoringInterval(Number(e.target.value))}
         >
-          <option value={1}>1 Minute (Pro)</option>
+          <option value={1}>1 Minute</option>
           <option value={5}>5 Minutes</option>
-          <option value={15}>15 Minutes</option>
           <option value={30}>30 Minutes</option>
-          <option value={60}>60 Minutes</option>
+          <option value={60}>1 Hour</option>
+          <option value={300}>5 Hours</option>
+          <option value={720}>12 Hours</option>
+          <option value={1440}>1 Day</option>
+          <option value={7200}>5 Days</option>
         </select>
       </div>
 
       <div className="flex items-center justify-end gap-3 pt-4 border-t border-border mt-6">
         <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button>
-        <Button type="submit" variant="primary" isLoading={isLoading}>Add Project</Button>
+        <Button type="submit" variant="primary" isLoading={isLoading}>
+          {isEditing ? 'Save Changes' : 'Add Project'}
+        </Button>
       </div>
     </form>
   );

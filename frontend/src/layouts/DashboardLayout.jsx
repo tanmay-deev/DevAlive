@@ -46,7 +46,7 @@ export function DashboardLayout() {
         <div className="flex items-center justify-between mb-12">
           <Link to="/dashboard" className="flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center shadow-lg shadow-accent/20">
-               <span className="material-symbols-outlined text-white text-[20px]">shield_spark</span>
+               <span className="material-symbols-outlined text-white text-[20px]">monitor_heart</span>
             </div>
             <div>
               <h1 className="font-headline font-bold text-xl text-primary tracking-tight leading-tight">DevAlive</h1>
@@ -123,21 +123,19 @@ export function DashboardLayout() {
       <main className="flex-1 lg:ml-[260px] h-screen overflow-y-auto bg-background flex flex-col min-w-0">
         
         {/* TopNavBar Component */}
-        <header className="h-16 sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-outline-variant flex items-center justify-between px-4 lg:px-6">
+        <header className="py-4 min-h-[72px] sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-outline-variant flex items-center justify-between px-4 lg:px-6">
           {/* Left: Mobile Menu & Breadcrumb */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1 justify-start min-w-0">
             <button className="lg:hidden text-on-surface-variant hover:text-white" onClick={() => setIsMobileMenuOpen(true)}>
               <span className="material-symbols-outlined">menu</span>
             </button>
             <nav className="flex items-center text-on-surface-variant text-sm font-medium">
-              <span className="hover:text-primary cursor-pointer transition-colors hidden sm:block">Dashboard</span>
-              <span className="material-symbols-outlined scale-75 opacity-40 mx-1 hidden sm:block">chevron_right</span>
-              <span className="text-on-surface capitalize">{location.pathname.split('/')[1] || 'Overview'}</span>
+              <span className="text-on-surface capitalize font-semibold">{location.pathname.split('/')[1] || 'Overview'}</span>
             </nav>
           </div>
 
           {/* Center: Global Search */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <div className="hidden md:flex justify-center max-w-md w-full mx-4">
             <div className="relative w-full group">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-[20px]">search</span>
               <input 
@@ -153,7 +151,7 @@ export function DashboardLayout() {
           </div>
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1 justify-end shrink-0">
             <button className="relative p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-white rounded-lg transition-colors scale-95 duration-150">
               <span className="material-symbols-outlined text-[20px]">notifications</span>
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full border border-surface"></span>

@@ -8,6 +8,7 @@ import { DashboardLayout } from '../layouts/DashboardLayout.jsx';
 
 // Pages
 import { Landing } from '../pages/public/Landing.jsx';
+import { Docs } from '../pages/public/Docs.jsx';
 import { Login } from '../pages/auth/Login.jsx';
 import { Register } from '../pages/auth/Register.jsx';
 import { Dashboard } from '../pages/dashboard/Dashboard.jsx';
@@ -29,7 +30,7 @@ export function AppRoutes() {
         <Route path="/" element={<Landing />} />
         <Route path="/features" element={<Landing />} />
         <Route path="/how-it-works" element={<Landing />} />
-        <Route path="/docs" element={<Landing />} />
+        <Route path="/docs" element={<Docs />} />
         <Route path="/pricing" element={<Landing />} />
       </Route>
 

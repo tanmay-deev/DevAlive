@@ -51,8 +51,14 @@ const useAuthStore = create(
         }
       },
 
-      logout: () => {
-        set({ user: null, token: null, isAuthenticated: false, error: null });
+      logout: async () => {
+        try {
+          await authService.logout();
+        } catch (error) {
+          console.error('Logout API failed, but clearing local state anyway');
+        } finally {
+          set({ user: null, token: null, isAuthenticated: false, error: null });
+        }
       },
       
       clearError: () => set({ error: null })

@@ -10,6 +10,11 @@ class NotificationService {
     const response = await apiClient.patch(`/notifications/${id}/read`);
     return response.data;
   }
+
+  async deleteNotification(id) {
+    const response = await apiClient.delete(`/notifications/${id}`);
+    return response.data;
+  }
 }
 
 export default new NotificationService();

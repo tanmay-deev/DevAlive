@@ -25,6 +25,11 @@ class ProjectService {
     const response = await apiClient.delete(`/projects/${id}`);
     return response.data;
   }
+
+  async toggleMonitoring(id) {
+    const response = await apiClient.patch(`/projects/${id}/toggle-monitoring`);
+    return response.data;
+  }
 }
 
 export default new ProjectService();

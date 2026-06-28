@@ -39,6 +39,35 @@ const useProjectStore = create((set, get) => ({
       return false;
     }
   },
+
+  editProject: async (id, projectData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const data = await projectService.updateProject(id, projectData);
+      set(state => ({
+        projects: state.projects.map(p => p._id === id ? data.data.project : p),
+        isLoading: false
+      }));
+      return true;
+    } catch (error) {
+      set({ error: error.response?.data?.message || 'Failed to update project', isLoading: false });
+      return false;
+    }
+  },
+
+  toggleMonitoring: async (id) => {
+    set({ error: null });
+    try {
+      const data = await projectService.toggleMonitoring(id);
+      set(state => ({
+        projects: state.projects.map(p => p._id === id ? data.data.project : p)
+      }));
+      return true;
+    } catch (error) {
+      set({ error: error.response?.data?.message || 'Failed to toggle monitoring' });
+      return false;
+    }
+  },
   
   clearError: () => set({ error: null })
 }));

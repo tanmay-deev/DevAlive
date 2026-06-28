@@ -155,7 +155,7 @@ export function Landing() {
       </section>
 
       {/* Solution Section: How It Works */}
-      <section className="w-full px-6 py-24 bg-surface-container-low overflow-hidden">
+      <section id="how-it-works" className="w-full px-6 py-24 bg-surface-container-low overflow-hidden">
         <div className="max-w-[1280px] mx-auto">
           <h2 className="text-3xl md:text-4xl font-headline font-bold text-white mb-16 text-center">How DevAlive Works</h2>
           <div className="relative w-full max-w-4xl mx-auto">
@@ -185,7 +185,7 @@ export function Landing() {
       </section>
 
       {/* Features Grid */}
-      <section className="w-full px-6 py-24 max-w-[1280px] mx-auto">
+      <section id="features" className="w-full px-6 py-24 max-w-[1280px] mx-auto">
         <h2 className="text-3xl md:text-4xl font-headline font-bold text-white mb-12 text-center md:text-left">Production-Grade Features</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {[
@@ -282,6 +282,49 @@ export function Landing() {
             </div>
             <h3 className="text-xl font-headline font-semibold text-white">Reliable Monitoring</h3>
             <p className="text-on-surface-variant text-sm px-4">Multi-layered verification avoids false positives and ensures you only get paged when it's real.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="w-full px-6 py-24 max-w-[1280px] mx-auto text-center">
+        <h2 className="text-3xl md:text-4xl font-headline font-bold text-white mb-6">Simple, Transparent Pricing</h2>
+        <p className="text-on-surface-variant max-w-xl mx-auto mb-16">Start monitoring your projects today with zero hidden costs. No credit card required.</p>
+        
+        <div className="max-w-md mx-auto">
+          <div className="bg-surface-container-low border border-primary/30 rounded-3xl p-8 relative overflow-hidden group hover:border-primary/60 transition-colors shadow-2xl shadow-primary/5">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -mr-16 -mt-16 rounded-full transition-transform group-hover:scale-150"></div>
+            
+            <div className="relative z-10">
+              <span className="inline-block px-3 py-1 bg-primary/20 text-primary font-bold text-xs uppercase tracking-wider rounded-full mb-6 border border-primary/20">
+                Community Edition
+              </span>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="text-5xl font-headline font-bold text-white">$0</span>
+                <span className="text-on-surface-variant font-medium self-end mb-1">/ forever</span>
+              </div>
+              <p className="text-sm text-on-surface-variant mb-8">Everything you need to keep your portfolio alive.</p>
+              
+              <ul className="space-y-4 mb-8 text-left max-w-[240px] mx-auto">
+                {[
+                  'Up to 5 Projects monitored',
+                  '1 Minute check intervals',
+                  'Global latency metrics',
+                  'Discord & Email alerts',
+                  '90-day data retention',
+                  'Public status pages'
+                ].map((feature, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm text-white">
+                    <span className="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              
+              <Link to="/register" className="block w-full py-3.5 bg-primary text-background font-bold rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20">
+                Start Monitoring Free
+              </Link>
+            </div>
           </div>
         </div>
       </section>

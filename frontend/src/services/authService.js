@@ -24,6 +24,11 @@ class AuthService {
     }
     throw new Error('Failed to fetch user');
   }
+
+  async logout() {
+    const response = await apiClient.post('/auth/logout');
+    return response.data;
+  }
 }
 
 export default new AuthService();
