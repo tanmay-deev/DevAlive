@@ -111,7 +111,7 @@ export function Analytics() {
       {/* Top Row: Summary Insights (KPIs) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Uptime KPI */}
-        <div className="bg-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-emerald-500/30 transition-colors shadow-sm">
+        <div className="bg-surface-container-low border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-emerald-500/30 transition-colors shadow-sm">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors"></div>
           <div className="flex justify-between items-start mb-4">
             <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-inner">
@@ -125,7 +125,7 @@ export function Analytics() {
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Average Uptime</h4>
             <div className="text-3xl font-headline font-bold text-white">
                {isLoading ? (
-                  <div className="h-8 w-24 bg-surface-container-highest rounded animate-pulse mt-1"></div>
+                  <div className="h-8 w-24 bg-surface-container-high rounded animate-pulse mt-1"></div>
                ) : (
                   `${insights?.uptimePercentage || 0}%`
                )}
@@ -134,7 +134,7 @@ export function Analytics() {
         </div>
 
         {/* Latency KPI */}
-        <div className="bg-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-primary/30 transition-colors shadow-sm">
+        <div className="bg-surface-container-low border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-primary/30 transition-colors shadow-sm">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-primary/10 transition-colors"></div>
           <div className="flex justify-between items-start mb-4">
             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shadow-inner">
@@ -148,7 +148,7 @@ export function Analytics() {
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Average Latency</h4>
             <div className="text-3xl font-headline font-bold text-white">
               {isLoading ? (
-                  <div className="h-8 w-24 bg-surface-container-highest rounded animate-pulse mt-1"></div>
+                  <div className="h-8 w-24 bg-surface-container-high rounded animate-pulse mt-1"></div>
                ) : (
                   `${Math.round(insights?.averageResponseTime) || 0}ms`
                )}
@@ -157,7 +157,7 @@ export function Analytics() {
         </div>
 
         {/* Checks KPI */}
-        <div className="bg-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-secondary/30 transition-colors shadow-sm">
+        <div className="bg-surface-container-low border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-secondary/30 transition-colors shadow-sm">
           <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-secondary/10 transition-colors"></div>
           <div className="flex justify-between items-start mb-4">
             <div className="w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center border border-secondary/20 shadow-inner">
@@ -168,7 +168,7 @@ export function Analytics() {
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Total Pings</h4>
             <div className="text-3xl font-headline font-bold text-white flex items-baseline gap-2">
                {isLoading ? (
-                  <div className="h-8 w-24 bg-surface-container-highest rounded animate-pulse mt-1"></div>
+                  <div className="h-8 w-24 bg-surface-container-high rounded animate-pulse mt-1"></div>
                ) : (
                   <>
                     {insights?.totalChecks || 0}
@@ -185,14 +185,14 @@ export function Analytics() {
       </div>
 
       {/* Main Chart Section */}
-      <section className="bg-surface-container rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+      <section className="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden shadow-sm">
         <div className="p-5 border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between bg-surface-container-low gap-4">
           <h3 className="font-headline text-lg font-semibold flex items-center gap-2 text-white">
             <span className="material-symbols-outlined text-primary text-[20px]">timeline</span>
             Response Time
           </h3>
           <div className="flex items-center gap-3">
-             <div className="px-3 py-1.5 bg-surface-container-highest text-on-surface-variant border border-outline-variant/50 rounded-lg text-xs font-medium shadow-sm flex items-center gap-1.5">
+             <div className="px-3 py-1.5 bg-surface-container-high text-on-surface-variant border border-outline-variant/50 rounded-lg text-xs font-medium shadow-sm flex items-center gap-1.5">
                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                Last 7 Days
              </div>

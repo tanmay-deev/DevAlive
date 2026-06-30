@@ -5,7 +5,7 @@ import useAuthStore from '../../store/authStore.js';
 export function Settings() {
   const { user } = useAuthStore();
   const [settings, setSettings] = useState({
-    emailAlertsEnabled: true,
+    emailNotifications: true,
     notificationEmail: user?.email || '',
     dailyReportEnabled: false
   });
@@ -50,7 +50,7 @@ export function Settings() {
       type="button"
       onClick={() => onChange(!enabled)}
       className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-        enabled ? 'bg-primary' : 'bg-surface-container-highest'
+        enabled ? 'bg-primary' : 'bg-surface-container-high'
       }`}
     >
       <span
@@ -93,8 +93,8 @@ export function Settings() {
                   </div>
                   <div className="mt-1">
                     <ToggleSwitch 
-                      enabled={settings.emailAlertsEnabled} 
-                      onChange={(val) => setSettings({...settings, emailAlertsEnabled: val})} 
+                      enabled={settings.emailNotifications} 
+                      onChange={(val) => setSettings({...settings, emailNotifications: val})} 
                     />
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export function Settings() {
                   <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">mail</span>
                   <input 
                     type="email" 
-                    className="w-full bg-surface-container-highest border border-outline-variant rounded-lg pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-white"
+                    className="w-full bg-surface-container-high border border-outline-variant rounded-lg pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-white"
                     value={settings.notificationEmail}
                     onChange={(e) => setSettings({...settings, notificationEmail: e.target.value})}
                     placeholder="alerts@company.com"
