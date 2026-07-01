@@ -37,10 +37,12 @@ class NotificationService {
       // 2. Send email if enabled in settings
       if (settings.emailNotifications) {
         const timeStr = new Date().toLocaleString();
+        const alertEmail = settings.notificationEmail || user.email;
+        
         if (type === 'downtime' && settings.downtimeAlerts) {
-          await emailService.sendDowntimeAlert(user.email, project.projectName, project.endpointUrl, timeStr);
+          await emailService.sendDowntimeAlert(alertEmail, project.projectName, project.endpointUrl, timeStr);
         } else if (type === 'recovery' && settings.recoveryAlerts) {
-          await emailService.sendRecoveryAlert(user.email, project.projectName, project.endpointUrl, timeStr);
+          await emailService.sendRecoveryAlert(alertEmail, project.projectName, project.endpointUrl, timeStr);
         }
       }
     } catch (error) {

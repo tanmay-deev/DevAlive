@@ -11,6 +11,14 @@ const userSettingsSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  notificationEmail: {
+    type: String,
+    default: ''
+  },
+  dailyReportEnabled: {
+    type: Boolean,
+    default: false
+  },
   downtimeAlerts: {
     type: Boolean,
     default: true
