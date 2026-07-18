@@ -19,6 +19,10 @@ export const protect = async (req, res, next) => {
         return res.status(401).json({ success: false, message: 'Not authorized, user not found' });
       }
 
+      if (!req.user.emailVerified && req.user.emailVerificationToken) {
+        return res.status(403).json({ success: false, message: 'Please verify your email address to access this resource', code: 'EMAIL_NOT_VERIFIED' });
+      }
+
       next();
     } catch (error) {
       console.error(error);

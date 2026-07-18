@@ -11,6 +11,9 @@ import { Landing } from '../pages/public/Landing.jsx';
 import { Docs } from '../pages/public/Docs.jsx';
 import { Login } from '../pages/auth/Login.jsx';
 import { Register } from '../pages/auth/Register.jsx';
+import { ForgotPassword } from '../pages/auth/ForgotPassword.jsx';
+import { ResetPassword } from '../pages/auth/ResetPassword.jsx';
+import { VerifyEmail } from '../pages/auth/VerifyEmail.jsx';
 import { Dashboard } from '../pages/dashboard/Dashboard.jsx';
 import { Projects } from '../pages/projects/Projects.jsx';
 import { Analytics } from '../pages/analytics/Analytics.jsx';
@@ -38,6 +41,12 @@ export function AppRoutes() {
       <Route element={<PublicRoute><AuthLayout /></PublicRoute>}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+      </Route>
+
+      <Route element={<AuthLayout />}>
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
       </Route>
 
       {/* Protected Dashboard Routes */}

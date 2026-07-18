@@ -9,32 +9,43 @@ class MonitoringService {
     let httpStatusCode = null;
     let errorMessage = '';
     let responseTime = 0;
+    const maxRetries = 2; // Total of 3 attempts
     
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      
-      const response = await fetch(project.endpointUrl, {
-        method: 'GET',
-        signal: controller.signal,
-      });
-      
-      clearTimeout(timeoutId);
-      
-      httpStatusCode = response.status;
-      if (response.ok) {
-        status = 'success';
-      } else {
-        status = 'failure';
-        errorMessage = `HTTP Error: ${response.status} ${response.statusText}`;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
+        const response = await fetch(project.endpointUrl, {
+          method: 'GET',
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+        
+        httpStatusCode = response.status;
+        if (response.ok) {
+          status = 'success';
+          errorMessage = '';
+          break; // Exit loop on success
+        } else {
+          status = 'failure';
+          errorMessage = `HTTP Error: ${response.status} ${response.statusText}`;
+        }
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          status = 'timeout';
+          errorMessage = 'Request timed out after 10000ms';
+        } else {
+          status = 'error';
+          errorMessage = error.message;
+        }
       }
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        status = 'timeout';
-        errorMessage = 'Request timed out after 10000ms';
-      } else {
-        status = 'error';
-        errorMessage = error.message;
+
+      // If failed and retries left, wait using exponential backoff
+      if (status !== 'success' && attempt < maxRetries) {
+        const backoffDelay = Math.pow(2, attempt) * 2000; // 2s, 4s delay
+        await new Promise(resolve => setTimeout(resolve, backoffDelay));
       }
     }
 

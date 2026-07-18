@@ -10,6 +10,7 @@ export function Analytics() {
   const [insights, setInsights] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState('all');
+  const [timeRange, setTimeRange] = useState(7);
 
   useEffect(() => {
     fetchProjects();
@@ -27,7 +28,7 @@ export function Analytics() {
           return;
         }
 
-        const data = await analyticsService.getUptimeChartData(projectId, 7);
+        const data = await analyticsService.getUptimeChartData(projectId, timeRange);
         const insightsData = await analyticsService.getProjectAnalytics(projectId);
         
         // Backend returns: data.data.chartData = [{ timestamp, responseTime, status }, ...]
@@ -56,7 +57,7 @@ export function Analytics() {
     };
     
     fetchAnalytics();
-  }, [selectedProject, projects]);
+  }, [selectedProject, timeRange, projects]);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -118,7 +119,7 @@ export function Analytics() {
                <span className="material-symbols-outlined text-[20px]">verified</span>
             </div>
             {!isLoading && insights && (
-               <span className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">7d Avg</span>
+               <span className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">{timeRange === 1 ? '24h' : `${timeRange}d`} Avg</span>
             )}
           </div>
           <div>
@@ -192,9 +193,17 @@ export function Analytics() {
             Response Time
           </h3>
           <div className="flex items-center gap-3">
-             <div className="px-3 py-1.5 bg-surface-container-high text-on-surface-variant border border-outline-variant/50 rounded-lg text-xs font-medium shadow-sm flex items-center gap-1.5">
-               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-               Last 7 Days
+             <div className="relative">
+               <select 
+                 className="appearance-none bg-surface-container-high text-on-surface border border-outline-variant rounded-lg text-xs font-medium px-3 py-1.5 pr-8 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all cursor-pointer"
+                 value={timeRange}
+                 onChange={(e) => setTimeRange(Number(e.target.value))}
+               >
+                 <option value={1}>Last 24 Hours</option>
+                 <option value={7}>Last 7 Days</option>
+                 <option value={30}>Last 30 Days</option>
+               </select>
+               <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px] pointer-events-none">expand_more</span>
              </div>
           </div>
         </div>

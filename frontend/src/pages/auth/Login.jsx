@@ -77,7 +77,7 @@ export function Login() {
             <input type="checkbox" className="w-4 h-4 text-accent border-border bg-background rounded focus:ring-offset-background" />
             <span className="text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Remember Me</span>
           </label>
-          <a href="#" className="text-sm text-accent hover:text-primary transition-colors font-medium">Forgot Password?</a>
+          <Link to="/forgot-password" className="text-sm text-accent hover:text-primary transition-colors font-medium">Forgot Password?</Link>
         </div>
 
         <Button type="submit" variant="primary" className="w-full py-3.5 h-auto text-base mt-6" isLoading={isLoading}>

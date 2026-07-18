@@ -30,7 +30,8 @@ const monitoringLogSchema = new mongoose.Schema({
   checkedAt: {
     type: Date,
     default: Date.now,
-    index: -1
+    index: -1,
+    expires: '30d' // Automatically delete logs older than 30 days
   }
 }, {
   timestamps: true
