@@ -8,21 +8,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "#c0c1ff",
-        "accent": "#6366F1",
-        "surface-container-lowest": "#0e0e11",
-        "surface-container-low": "#1b1b1e",
-        "surface-container": "#222225",
-        "surface-container-high": "#2a2a2d",
-        "surface-container-highest": "#333336",
-        "on-surface": "#e4e1e6",
-        "on-surface-variant": "#c7c4d7",
-        "outline": "#908fa0",
-        "outline-variant": "#464554",
-        "background": "#0a0a0a",
-        "surface": "#131316",
-        "card": "#18181B",
-        "border": "#27272A"
+        "primary": "var(--color-primary)",
+        "accent": "var(--color-accent)",
+        "surface-container-lowest": "var(--color-surface-container-lowest)",
+        "surface-container-low": "var(--color-surface-container-low)",
+        "surface-container": "var(--color-surface-container)",
+        "surface-container-high": "var(--color-surface-container-high)",
+        "surface-container-highest": "var(--color-surface-container-highest)",
+        "on-surface": "var(--color-on-surface)",
+        "on-surface-variant": "var(--color-on-surface-variant)",
+        "outline": "var(--color-outline)",
+        "outline-variant": "var(--color-outline-variant)",
+        "background": "var(--color-background)",
+        "surface": "var(--color-surface)",
+        "card": "var(--color-card)",
+        "border": "var(--color-border)"
       },
       borderRadius: {
         "DEFAULT": "0.25rem",

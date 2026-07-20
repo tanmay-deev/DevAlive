@@ -3,6 +3,8 @@ import useProjectStore from '../../store/projectStore.js';
 import analyticsService from '../../services/analyticsService.js';
 import { Link } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Skeleton } from '../../components/ui/Skeleton.jsx';
+import { EmptyState } from '../../components/ui/EmptyState.jsx';
 import { cn } from '../../utils/utils.js';
 
 export function Dashboard() {
@@ -117,7 +119,7 @@ export function Dashboard() {
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Active Monitors</h4>
             <div className="text-3xl font-headline font-bold text-white">
               {isLoadingSummary ? (
-                 <div className="h-8 w-24 bg-surface-container-high rounded animate-pulse mt-1"></div>
+                 <Skeleton className="h-8 w-24 mt-1" />
               ) : (
                  `${summary?.onlineProjects || 0} / ${summary?.totalProjects || 0}`
               )}
@@ -142,7 +144,7 @@ export function Dashboard() {
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Average Uptime</h4>
             <div className="text-3xl font-headline font-bold text-white">
                {isLoadingSummary ? (
-                 <div className="h-8 w-24 bg-surface-container-high rounded animate-pulse mt-1"></div>
+                 <Skeleton className="h-8 w-24 mt-1" />
               ) : (
                  `${summary?.averageUptime || 0}%`
               )}
@@ -173,7 +175,7 @@ export function Dashboard() {
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Unread Notifications</h4>
             <div className="text-3xl font-headline font-bold text-white">
                {isLoadingSummary ? (
-                 <div className="h-8 w-16 bg-surface-container-high rounded animate-pulse mt-1"></div>
+                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
                  summary?.unreadAlerts || '0'
               )}
@@ -278,18 +280,35 @@ export function Dashboard() {
         
         <div className="flex flex-col">
            {isProjectsLoading ? (
-             <div className="py-12 flex flex-col items-center justify-center text-on-surface-variant">
-               <span className="material-symbols-outlined animate-spin text-[32px] text-primary mb-3">progress_activity</span>
-               <p className="text-sm">Loading projects...</p>
-             </div>
+             Array.from({ length: 3 }).map((_, i) => (
+               <div key={i} className="flex items-center justify-between p-4 border-b border-outline-variant/50">
+                 <div className="flex items-center gap-4 w-full max-w-sm">
+                   <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+                   <div className="flex flex-col gap-2 w-full">
+                     <Skeleton className="w-full h-4" />
+                     <Skeleton className="w-2/3 h-3" />
+                   </div>
+                 </div>
+                 <div className="flex items-center gap-6 shrink-0">
+                   <div className="hidden sm:flex flex-col items-end gap-2">
+                     <Skeleton className="w-16 h-3" />
+                     <Skeleton className="w-12 h-4" />
+                   </div>
+                   <Skeleton className="w-24 h-8 rounded-full" />
+                 </div>
+               </div>
+             ))
           ) : projects.length === 0 ? (
-             <div className="py-16 flex flex-col items-center justify-center text-center">
-               <span className="material-symbols-outlined text-[48px] opacity-20 mb-4">folder_off</span>
-               <p className="text-sm text-on-surface-variant mb-4">No projects configured yet.</p>
-               <Link to="/projects" className="px-4 py-2 bg-surface-container-low border border-outline-variant text-white text-sm font-medium rounded-lg hover:bg-surface-container-high transition-colors">
-                 Create Your First Project
-               </Link>
-             </div>
+             <EmptyState 
+               icon="folder_off"
+               title="No Projects Yet"
+               description="You haven't added any projects to monitor."
+               action={
+                 <Link to="/projects" className="px-6 py-2.5 bg-surface-container-low border border-outline-variant text-white text-sm font-semibold rounded-lg hover:bg-surface-container-high transition-colors">
+                   Create Your First Project
+                 </Link>
+               }
+             />
           ) : (
             projects.slice(0, 5).map((project, index) => (
               <div 

@@ -2,6 +2,11 @@ import projectRepository from '../repositories/project.repository.js';
 
 class ProjectService {
   async createProject(userId, data) {
+    const projectCount = await projectRepository.countByUserId(userId);
+    if (projectCount >= 5) {
+      throw { status: 403, message: 'You have reached the maximum limit of 5 projects. Upgrade your plan for more.' };
+    }
+
     const projectData = {
       ...data,
       userId,

@@ -75,6 +75,10 @@ class NotificationService {
     };
   }
 
+  async getUnreadCount(userId) {
+    return await Notification.countDocuments({ userId, isRead: false });
+  }
+
   async markAsRead(notificationId, userId) {
     return await Notification.findOneAndUpdate(
       { _id: notificationId, userId },

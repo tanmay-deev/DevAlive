@@ -3,8 +3,27 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-primary: #c0c1ff;
+    --color-accent: #6366F1;
+    --color-surface-container-lowest: #0e0e11;
+    --color-surface-container-low: #1b1b1e;
+    --color-surface-container: #222225;
+    --color-surface-container-high: #2a2a2d;
+    --color-surface-container-highest: #333336;
+    --color-on-surface: #e4e1e6;
+    --color-on-surface-variant: #c7c4d7;
+    --color-outline: #908fa0;
+    --color-outline-variant: #464554;
+    --color-background: #0a0a0a;
+    --color-surface: #131316;
+    --color-card: #18181B;
+    --color-border: #27272A;
+  }
+
   body {
-    background-color: #0a0a0a;
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
     font-family: 'Inter', sans-serif;
   }
 }

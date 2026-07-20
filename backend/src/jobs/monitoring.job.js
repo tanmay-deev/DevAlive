@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import Project from '../models/Project.js';
 import monitoringService from '../services/monitoring.service.js';
+import pLimit from 'p-limit';
 
 const startMonitoring = () => {
   // Run every minute
@@ -12,6 +13,10 @@ const startMonitoring = () => {
       // Fetch all projects where monitoring is enabled
       const projects = await Project.find({ monitoringEnabled: true });
       
+      // Limit concurrency to 50 concurrent requests to prevent event loop exhaustion
+      const limit = pLimit(50);
+      const checkPromises = [];
+
       for (const project of projects) {
         let shouldCheck = true;
         
@@ -26,13 +31,19 @@ const startMonitoring = () => {
         }
         
         if (shouldCheck) {
-          console.log(`[Monitoring] Checking project: ${project.projectName} (${project.endpointUrl})`);
-          // Execute asynchronously without awaiting here to parallelize requests
-          monitoringService.executeHealthCheck(project).catch(err => {
-            console.error(`[Monitoring] Failed to execute health check for ${project.projectName}:`, err.message);
-          });
+          console.log(`[Monitoring] Queueing project check: ${project.projectName} (${project.endpointUrl})`);
+          // Add to promises array with concurrency limit
+          checkPromises.push(limit(() => 
+            monitoringService.executeHealthCheck(project).catch(err => {
+              console.error(`[Monitoring] Failed to execute health check for ${project.projectName}:`, err.message);
+            })
+          ));
         }
       }
+
+      // Wait for all queued checks to finish before cron completes this cycle
+      await Promise.allSettled(checkPromises);
+      
     } catch (error) {
       console.error('[Monitoring] Error in monitoring job:', error);
     }

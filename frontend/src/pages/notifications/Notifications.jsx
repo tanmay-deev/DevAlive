@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import notificationService from '../../services/notificationService.js';
 import { format } from 'date-fns';
+import { EmptyState } from '../../components/ui/EmptyState.jsx';
 import { cn } from '../../utils/utils.js';
 
 export function Notifications() {
@@ -88,13 +89,11 @@ export function Notifications() {
              <p className="text-sm">Syncing inbox...</p>
           </div>
         ) : notifications.length === 0 ? (
-          <div className="bg-surface-container border border-outline-variant rounded-2xl p-16 text-center flex flex-col items-center justify-center">
-            <div className="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-[32px] text-on-surface-variant">notifications_off</span>
-            </div>
-            <h3 className="text-lg font-headline font-semibold text-white mb-2">You're all caught up!</h3>
-            <p className="text-sm text-on-surface-variant max-w-sm">There are no new notifications or system alerts at this time.</p>
-          </div>
+          <EmptyState 
+            icon="notifications_off"
+            title="You're all caught up!"
+            description="There are no new notifications or system alerts at this time."
+          />
         ) : (
           <div className="bg-surface-container border border-outline-variant rounded-2xl overflow-hidden divide-y divide-outline-variant/50 shadow-sm">
             {notifications.map(notif => (

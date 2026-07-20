@@ -7,6 +7,7 @@ import { protect } from '../middleware/auth.middleware.js';
 router.use(protect);
 
 router.get('/', notificationController.getNotifications);
+router.get('/unread-count', notificationController.getUnreadCount);
 router.patch('/:id/read', notificationController.markAsRead);
 router.delete('/:id', notificationController.deleteNotification);
 

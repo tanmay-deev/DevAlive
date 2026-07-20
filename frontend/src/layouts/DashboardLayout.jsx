@@ -2,21 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { cn } from '../utils/utils.js';
 import useAuthStore from '../store/authStore.js';
+import notificationService from '../services/notificationService.js';
 
 export function DashboardLayout() {
   const location = useLocation();
   const { user, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
     { name: 'Projects', path: '/projects', icon: 'folder_open' },
     { name: 'Analytics', path: '/analytics', icon: 'insights' },
     { name: 'Monitoring Logs', path: '/logs', icon: 'terminal' },
-    { name: 'Notifications', path: '/notifications', icon: 'notifications', badge: 4 },
+    { name: 'Notifications', path: '/notifications', icon: 'notifications', badge: unreadCount > 0 ? unreadCount : null },
     { name: 'Settings', path: '/settings', icon: 'settings' },
   ];
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const data = await notificationService.getUnreadCount();
+        setUnreadCount(data.data.unreadCount);
+      } catch (err) {
+        console.error("Failed to fetch unread count", err);
+      }
+    };
+    fetchUnreadCount();
+    // Ideally we would set up an interval or websocket here for real-time updates
+  }, [location.pathname]);
 
   // Close profile menu if clicked outside (simple effect via overlay)
   useEffect(() => {
@@ -83,8 +98,8 @@ export function DashboardLayout() {
                 <span className="font-medium text-sm">{item.name}</span>
                 {item.badge && (
                   <span className={cn(
-                    "ml-auto text-[10px] px-1.5 py-0.5 rounded-full font-bold",
-                    isActive ? "bg-primary text-on-primary" : "bg-surface-container-highest text-on-surface"
+                    "ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold",
+                    "bg-primary text-background"
                   )}>
                     {item.badge}
                   </span>
@@ -152,10 +167,12 @@ export function DashboardLayout() {
 
           {/* Right: Actions */}
           <div className="flex items-center gap-3 flex-1 justify-end shrink-0">
-            <button className="relative p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-white rounded-lg transition-colors scale-95 duration-150">
+            <Link to="/notifications" className="relative p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-white rounded-lg transition-colors scale-95 duration-150 block">
               <span className="material-symbols-outlined text-[20px]">notifications</span>
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full border border-surface"></span>
-            </button>
+              {unreadCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full border border-surface animate-pulse"></span>
+              )}
+            </Link>
             <button className="hidden sm:block p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-white rounded-lg transition-colors scale-95 duration-150">
               <span className="material-symbols-outlined text-[20px]">help_outline</span>
             </button>

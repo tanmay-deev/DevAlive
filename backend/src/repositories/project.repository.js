@@ -5,6 +5,10 @@ class ProjectRepository {
     return await Project.create(projectData);
   }
 
+  async countByUserId(userId) {
+    return await Project.countDocuments({ userId });
+  }
+
   async findById(projectId, userId) {
     return await Project.findOne({ _id: projectId, userId });
   }

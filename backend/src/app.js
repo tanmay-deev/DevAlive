@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import mongoSanitize from 'express-mongo-sanitize';
 
 // Routes
 import authRoutes from './routes/auth.routes.js';
@@ -17,6 +18,16 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  if (req.body) req.body = mongoSanitize.sanitize(req.body);
+  if (req.params) req.params = mongoSanitize.sanitize(req.params);
+  if (req.query) {
+    const sanitizedQuery = mongoSanitize.sanitize(req.query);
+    for (const key in req.query) delete req.query[key];
+    Object.assign(req.query, sanitizedQuery);
+  }
+  next();
+});
 app.use(cors());
 app.use(helmet());
 

@@ -6,6 +6,11 @@ class NotificationService {
     return response.data;
   }
 
+  async getUnreadCount() {
+    const response = await apiClient.get(`/notifications/unread-count`);
+    return response.data;
+  }
+
   async markAsRead(id) {
     const response = await apiClient.patch(`/notifications/${id}/read`);
     return response.data;

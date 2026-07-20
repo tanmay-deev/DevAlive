@@ -62,6 +62,10 @@ const projectSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  consecutiveFailures: {
+    type: Number,
+    default: 0,
+  },
   uptimePercentage: {
     type: Number,
     default: 100,

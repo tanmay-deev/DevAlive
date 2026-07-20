@@ -5,6 +5,8 @@ import { Card } from '../../components/ui/Card.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Modal } from '../../components/ui/Modal.jsx';
 import { ProjectForm } from '../../components/forms/ProjectForm.jsx';
+import { Skeleton } from '../../components/ui/Skeleton.jsx';
+import { EmptyState } from '../../components/ui/EmptyState.jsx';
 import { Link } from 'react-router-dom';
 import { cn } from '../../utils/utils.js';
 
@@ -233,24 +235,39 @@ export function Projects() {
         {/* Project Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {isLoading && projects.length === 0 ? (
-            <div className="col-span-full py-12 flex flex-col items-center justify-center text-on-surface-variant">
-              <span className="material-symbols-outlined animate-spin text-[32px] text-primary mb-3">progress_activity</span>
-              <p className="text-sm">Loading projects...</p>
-            </div>
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex flex-col justify-between bg-surface-container-lowest border border-outline-variant rounded-xl p-5 h-[160px]">
+                <div className="flex justify-between items-start gap-3">
+                  <div className="flex gap-3 min-w-0 flex-1">
+                    <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+                    <div className="flex flex-col gap-2 mt-1 w-full max-w-[200px]">
+                      <Skeleton className="w-full h-4" />
+                      <Skeleton className="w-2/3 h-3" />
+                    </div>
+                  </div>
+                  <Skeleton className="w-7 h-7 rounded-full shrink-0" />
+                </div>
+                <div className="flex flex-col gap-2 mt-auto">
+                  <Skeleton className="w-24 h-5 rounded" />
+                  <Skeleton className="w-32 h-3" />
+                </div>
+              </div>
+            ))
           ) : filteredProjects.length === 0 ? (
-            <div className="col-span-full py-16 flex flex-col items-center justify-center text-center">
-              <span className="material-symbols-outlined text-[48px] opacity-20 mb-4">folder_off</span>
-              <p className="text-sm text-on-surface-variant mb-4 max-w-sm">
-                {searchQuery ? "No projects match your search." : "No projects configured yet."}
-              </p>
-              {!searchQuery && (
-                <button 
-                  onClick={handleAddClick}
-                  className="px-4 py-2 bg-surface-container-low border border-outline-variant text-white text-sm font-medium rounded-lg hover:bg-surface-container-high transition-colors"
-                >
-                  Create Your First Project
-                </button>
-              )}
+            <div className="col-span-full">
+              <EmptyState 
+                icon="folder_off"
+                title={searchQuery ? "No Matches Found" : "No Projects Yet"}
+                description={searchQuery ? "Try adjusting your search query to find what you're looking for." : "You haven't added any projects yet. Set up your first project to start monitoring uptime."}
+                action={!searchQuery ? (
+                  <button 
+                    onClick={handleAddClick}
+                    className="px-6 py-2.5 bg-primary text-background font-semibold text-sm rounded-lg hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                  >
+                    Add Your First Project
+                  </button>
+                ) : null}
+              />
             </div>
           ) : (
             filteredProjects.map(project => (
