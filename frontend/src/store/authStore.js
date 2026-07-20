@@ -80,6 +80,21 @@ const useAuthStore = create(
           set({ user: null, token: null, isAuthenticated: false, error: null });
         }
       },
+
+      deleteAccount: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          await authService.deleteAccount();
+          set({ user: null, token: null, isAuthenticated: false, error: null, isLoading: false });
+          return true;
+        } catch (error) {
+          set({ 
+            error: error.response?.data?.message || error.message || 'Failed to delete account',
+            isLoading: false 
+          });
+          return false;
+        }
+      },
       
       clearError: () => set({ error: null })
     }),

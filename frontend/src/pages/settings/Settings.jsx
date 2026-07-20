@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import settingsService from '../../services/settingsService.js';
 import authService from '../../services/authService.js';
 import useAuthStore from '../../store/authStore.js';
@@ -6,7 +7,8 @@ import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 
 export function Settings() {
-  const { user, setToken } = useAuthStore();
+  const { user, logout, deleteAccount } = useAuthStore();
+  const navigate = useNavigate();
   const [settings, setSettings] = useState({
     emailNotifications: true,
     notificationEmail: user?.email || '',
@@ -20,7 +22,6 @@ export function Settings() {
   });
   const [isProfileSaving, setIsProfileSaving] = useState(false);
   const [profileMessage, setProfileMessage] = useState('');
-
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
@@ -62,16 +63,15 @@ export function Settings() {
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== 'DELETE') return;
     
+    const confirmed = window.confirm("Are you sure you want to permanently delete your account and all associated projects? This action cannot be undone.");
+    if (!confirmed) return;
+    
     setIsDeleting(true);
-    try {
-      const apiClient = (await import('../../services/apiClient.js')).default;
-      await apiClient.delete('/auth/me');
-      
-      // Logout
-      useAuthStore.getState().logout();
-      window.location.href = '/login';
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete account');
+    const success = await deleteAccount();
+    if (success) {
+      navigate('/');
+    } else {
+      alert("Failed to delete account. Please try again.");
       setIsDeleting(false);
     }
   };
@@ -81,10 +81,6 @@ export function Settings() {
     setIsProfileSaving(true);
     setProfileMessage('');
     try {
-      // Use raw apiClient or service. But we need to use apiClient to put to /auth/profile
-      // Wait, we didn't add updateProfile to frontend authService.js! Let me add it.
-      // Wait, since I haven't added it yet, I will use raw apiClient here to save time, or I can add it to authService.js.
-      // Let's use apiClient since I didn't add it to authService.js yet.
       const apiClient = (await import('../../services/apiClient.js')).default;
       const res = await apiClient.put('/auth/profile', {
         fullName: profile.fullName,
@@ -95,7 +91,6 @@ export function Settings() {
       
       setProfileMessage('Profile updated successfully!');
       
-      // Update local storage user data
       useAuthStore.setState({ user: res.data.data.user });
       
       setProfile({ ...profile, currentPassword: '', newPassword: '' });
@@ -107,7 +102,6 @@ export function Settings() {
     }
   };
 
-  // Custom Toggle Switch Component
   const ToggleSwitch = ({ enabled, onChange }) => (
     <button
       type="button"
@@ -127,13 +121,11 @@ export function Settings() {
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
-      {/* Header */}
       <header>
         <h2 className="font-headline font-bold text-2xl text-on-surface tracking-tight mb-1">Account Settings</h2>
         <p className="text-on-surface-variant text-sm">Manage your notification preferences and account details.</p>
       </header>
 
-      {/* User Profile Card */}
       <div className="bg-surface-container border border-outline-variant rounded-2xl overflow-hidden shadow-sm mb-8">
         <form onSubmit={handleProfileSave}>
           <div className="p-6 sm:p-8 border-b border-outline-variant bg-surface-container-low">
@@ -185,7 +177,6 @@ export function Settings() {
             </div>
           </div>
           
-          {/* Footer Actions */}
           <div className="p-6 sm:px-8 sm:py-6 bg-surface-container flex items-center justify-between">
             <div>
               {profileMessage && (
@@ -198,7 +189,7 @@ export function Settings() {
               )}
             </div>
             <Button type="submit" variant="primary" isLoading={isProfileSaving}>
-              Save Profile
+              Save Changes
             </Button>
           </div>
         </form>

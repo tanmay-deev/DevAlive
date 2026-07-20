@@ -11,8 +11,8 @@ export function Footer() {
         </div>
         <p>© {new Date().getFullYear()} DevAlive. All rights reserved.</p>
         <div className="flex gap-4">
-          <Link to="#" className="hover:text-white transition-colors">Terms</Link>
-          <Link to="#" className="hover:text-white transition-colors">Privacy</Link>
+          <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
+          <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
         </div>
       </div>
     </footer>

@@ -38,6 +38,11 @@ class AuthService {
     return response.data;
   }
 
+  async deleteAccount() {
+    const response = await apiClient.delete('/auth/me');
+    return response.data;
+  }
+
   async forgotPassword(email) {
     const response = await apiClient.post('/auth/forgot-password', { email });
     return response.data;

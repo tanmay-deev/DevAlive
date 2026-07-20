@@ -9,6 +9,8 @@ import { DashboardLayout } from '../layouts/DashboardLayout.jsx';
 // Pages
 import { Landing } from '../pages/public/Landing.jsx';
 import { Docs } from '../pages/public/Docs.jsx';
+import { Terms } from '../pages/public/Terms.jsx';
+import { Privacy } from '../pages/public/Privacy.jsx';
 import { Login } from '../pages/auth/Login.jsx';
 import { Register } from '../pages/auth/Register.jsx';
 import { ForgotPassword } from '../pages/auth/ForgotPassword.jsx';
@@ -35,6 +37,8 @@ export function AppRoutes() {
         <Route path="/how-it-works" element={<Landing />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/pricing" element={<Landing />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
       </Route>
 
       {/* Auth Routes */}
