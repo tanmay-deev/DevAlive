@@ -81,7 +81,7 @@ export function Landing() {
                 { n: 2, title: 'Auto Monitor', desc: 'Config-free setup' },
                 { n: 3, title: 'Health Check', desc: '24/7 pings' },
                 { n: 4, title: 'Detection', desc: 'Instant outage catch' },
-                { n: 5, title: 'Alerts', desc: 'Discord / Email' },
+                { n: 5, title: 'Alerts', desc: 'Email' },
                 { n: 6, title: 'Analytics', desc: 'Reliability reports' }
               ].map(step => (
                 <div key={step.n} className="flex flex-col items-center text-center group">

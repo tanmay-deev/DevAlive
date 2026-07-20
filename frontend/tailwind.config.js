@@ -8,21 +8,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "var(--color-primary)",
-        "accent": "var(--color-accent)",
-        "surface-container-lowest": "var(--color-surface-container-lowest)",
-        "surface-container-low": "var(--color-surface-container-low)",
-        "surface-container": "var(--color-surface-container)",
-        "surface-container-high": "var(--color-surface-container-high)",
-        "surface-container-highest": "var(--color-surface-container-highest)",
-        "on-surface": "var(--color-on-surface)",
-        "on-surface-variant": "var(--color-on-surface-variant)",
-        "outline": "var(--color-outline)",
-        "outline-variant": "var(--color-outline-variant)",
-        "background": "var(--color-background)",
-        "surface": "var(--color-surface)",
-        "card": "var(--color-card)",
-        "border": "var(--color-border)"
+        "primary": "rgb(var(--color-primary) / <alpha-value>)",
+        "accent": "rgb(var(--color-accent) / <alpha-value>)",
+        "surface-container-lowest": "rgb(var(--color-surface-container-lowest) / <alpha-value>)",
+        "surface-container-low": "rgb(var(--color-surface-container-low) / <alpha-value>)",
+        "surface-container": "rgb(var(--color-surface-container) / <alpha-value>)",
+        "surface-container-high": "rgb(var(--color-surface-container-high) / <alpha-value>)",
+        "surface-container-highest": "rgb(var(--color-surface-container-highest) / <alpha-value>)",
+        "on-surface": "rgb(var(--color-on-surface) / <alpha-value>)",
+        "on-surface-variant": "rgb(var(--color-on-surface-variant) / <alpha-value>)",
+        "outline": "rgb(var(--color-outline) / <alpha-value>)",
+        "outline-variant": "rgb(var(--color-outline-variant) / <alpha-value>)",
+        "background": "rgb(var(--color-background) / <alpha-value>)",
+        "surface": "rgb(var(--color-surface) / <alpha-value>)",
+        "card": "rgb(var(--color-card) / <alpha-value>)",
+        "border": "rgb(var(--color-border) / <alpha-value>)"
       },
       borderRadius: {
         "DEFAULT": "0.25rem",

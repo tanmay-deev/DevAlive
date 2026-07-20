@@ -21,6 +21,19 @@ class AuthController {
     }
   }
 
+  async googleLogin(req, res, next) {
+    try {
+      const { credential } = req.body;
+      if (!credential) {
+        return res.status(400).json({ success: false, message: 'Google credential is required' });
+      }
+      const { user, token } = await authService.googleLogin(credential);
+      successResponse(res, 200, 'Google Login successful', { user, token });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getMe(req, res, next) {
     try {
       const { user } = await authService.getMe(req.user.id);

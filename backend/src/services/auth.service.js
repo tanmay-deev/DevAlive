@@ -73,6 +73,51 @@ class AuthService {
     return { user: userObj, token };
   }
 
+  async googleLogin(accessToken) {
+    let payload;
+    try {
+      const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info from Google');
+      }
+      payload = await response.json();
+    } catch (error) {
+      throw { status: 401, message: 'Invalid Google credential' };
+    }
+    
+    const { email, name, email_verified } = payload;
+    
+    if (!email_verified) {
+      throw { status: 400, message: 'Google account email is not verified' };
+    }
+    
+    let user = await userRepository.findByEmail(email);
+    
+    if (!user) {
+      const crypto = await import('crypto');
+      const randomPassword = crypto.randomBytes(32).toString('hex');
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(randomPassword, salt);
+      
+      user = await userRepository.create({
+        fullName: name,
+        email: email,
+        password: hashedPassword,
+        emailVerified: true 
+      });
+    } else {
+      await userRepository.updateLastLogin(user._id);
+    }
+    
+    const token = generateToken(user._id);
+    const userObj = user.toObject();
+    delete userObj.password;
+    
+    return { user: userObj, token };
+  }
+
   async getMe(userId) {
     const user = await userRepository.findById(userId);
     if (!user) {

@@ -31,6 +31,26 @@ const useAuthStore = create(
         }
       },
 
+      googleLogin: async (credential) => {
+        set({ isLoading: true, error: null });
+        try {
+          const data = await authService.googleLogin(credential);
+          set({
+            user: data.user,
+            token: data.token,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+          return true;
+        } catch (error) {
+          set({ 
+            error: error.response?.data?.message || error.message || 'Google Login failed',
+            isLoading: false 
+          });
+          return false;
+        }
+      },
+
       register: async (name, email, password) => {
         set({ isLoading: true, error: null });
         try {

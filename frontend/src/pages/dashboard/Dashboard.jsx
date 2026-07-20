@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useProjectStore from '../../store/projectStore.js';
 import analyticsService from '../../services/analyticsService.js';
 import { Link } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Skeleton } from '../../components/ui/Skeleton.jsx';
 import { EmptyState } from '../../components/ui/EmptyState.jsx';
 import { cn } from '../../utils/utils.js';
@@ -71,8 +71,8 @@ export function Dashboard() {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-surface-container-high/80 backdrop-blur-md border border-outline-variant p-4 rounded-xl shadow-2xl">
-          <p className="text-on-surface-variant font-label-sm mb-3 text-xs">{label}</p>
+        <div className="bg-surface-container-highest/80 backdrop-blur-xl border border-outline-variant p-4 rounded-xl shadow-2xl">
+          <p className="text-on-surface-variant font-mono mb-3 text-xs">{label}</p>
           <div className="flex items-center gap-6 justify-between">
             <span className="flex items-center gap-2 text-sm font-medium text-white">
               <span className="w-2.5 h-2.5 rounded-full bg-primary"></span>
@@ -98,7 +98,7 @@ export function Dashboard() {
         </div>
         <Link 
           to="/projects" 
-          className="w-full sm:w-auto px-5 py-2.5 bg-white text-background font-semibold text-sm rounded-lg hover:bg-gray-200 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
+          className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-background font-bold text-sm rounded-lg hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(192,193,255,0.3)] whitespace-nowrap"
         >
           <span className="material-symbols-outlined text-[20px]">add</span>
           New Deployment
@@ -108,14 +108,14 @@ export function Dashboard() {
       {/* Bento Grid / Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Stat Card 1: Active Monitors */}
-        <div className="bg-surface-container-low border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-primary/30 transition-colors shadow-sm">
+        <div className="bg-gradient-to-br from-surface-container-low to-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-primary/30 transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-primary/10">
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-primary/10 transition-colors"></div>
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between items-start mb-4 relative z-10">
             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shadow-inner">
               <span className="material-symbols-outlined text-[20px]">dns</span>
             </div>
           </div>
-          <div>
+          <div className="relative z-10">
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Active Monitors</h4>
             <div className="text-3xl font-headline font-bold text-white">
               {isLoadingSummary ? (
@@ -124,23 +124,23 @@ export function Dashboard() {
                  `${summary?.onlineProjects || 0} / ${summary?.totalProjects || 0}`
               )}
             </div>
-            <div className="mt-4 flex gap-1 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+            <div className="mt-4 flex gap-1 h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden border border-outline-variant/30">
                {!isLoadingSummary && summary?.totalProjects > 0 && (
-                  <div className="h-full bg-primary rounded-full transition-all duration-1000" style={{ width: `${(summary?.onlineProjects / summary?.totalProjects) * 100}%`}}></div>
+                  <div className="h-full bg-primary rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(192,193,255,0.8)]" style={{ width: `${(summary?.onlineProjects / summary?.totalProjects) * 100}%`}}></div>
                )}
             </div>
           </div>
         </div>
 
         {/* Stat Card 2: Average Uptime */}
-        <div className="bg-surface-container-low border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-emerald-500/30 transition-colors shadow-sm">
+        <div className="bg-gradient-to-br from-surface-container-low to-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-emerald-500/30 transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-emerald-500/10">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors"></div>
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between items-start mb-4 relative z-10">
             <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-inner">
               <span className="material-symbols-outlined text-[20px]">speed</span>
             </div>
           </div>
-          <div>
+          <div className="relative z-10">
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Average Uptime</h4>
             <div className="text-3xl font-headline font-bold text-white">
                {isLoadingSummary ? (
@@ -149,29 +149,29 @@ export function Dashboard() {
                  `${summary?.averageUptime || 0}%`
               )}
             </div>
-            <div className="mt-4 flex gap-1 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+            <div className="mt-4 flex gap-1 h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden border border-outline-variant/30">
                {!isLoadingSummary && (
-                  <div className="h-full bg-emerald-400 rounded-full transition-all duration-1000" style={{ width: `${summary?.averageUptime || 0}%`}}></div>
+                  <div className="h-full bg-emerald-400 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(52,211,153,0.8)]" style={{ width: `${summary?.averageUptime || 0}%`}}></div>
                )}
             </div>
           </div>
         </div>
 
         {/* Stat Card 3: Total Alerts */}
-        <div className="bg-surface-container-low border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-red-500/30 transition-colors shadow-sm">
+        <div className="bg-gradient-to-br from-surface-container-low to-surface-container border border-outline-variant p-6 rounded-xl relative overflow-hidden group hover:border-red-500/30 transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-red-500/10">
           <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-red-500/10 transition-colors"></div>
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between items-start mb-4 relative z-10">
             <div className="w-10 h-10 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center border border-red-500/20 shadow-inner">
               <span className="material-symbols-outlined text-[20px]">notifications_active</span>
             </div>
             {!isLoadingSummary && summary?.unreadAlerts > 0 && (
-              <span className="px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 text-[10px] font-bold uppercase tracking-wider border border-red-500/20 shadow-sm flex items-center gap-1">
+              <span className="px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 text-[10px] font-bold uppercase tracking-wider border border-red-500/20 shadow-[0_0_10px_rgba(248,113,113,0.1)] backdrop-blur-sm flex items-center gap-1">
                 <span className="material-symbols-outlined text-[14px]">error</span>
                 {summary.unreadAlerts} New
               </span>
             )}
           </div>
-          <div>
+          <div className="relative z-10">
             <h4 className="text-on-surface-variant font-medium text-sm mb-1">Unread Notifications</h4>
             <div className="text-3xl font-headline font-bold text-white">
                {isLoadingSummary ? (
@@ -180,9 +180,9 @@ export function Dashboard() {
                  summary?.unreadAlerts || '0'
               )}
             </div>
-            <div className="mt-4 flex gap-1 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+            <div className="mt-4 flex gap-1 h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden border border-outline-variant/30">
                {!isLoadingSummary && (
-                  <div className={`h-full rounded-full transition-all duration-1000 ${summary?.unreadAlerts > 0 ? 'bg-red-400 w-full' : 'bg-surface-container-high'}`}></div>
+                  <div className={`h-full rounded-full transition-all duration-1000 ${summary?.unreadAlerts > 0 ? 'bg-red-400 w-full shadow-[0_0_10px_rgba(248,113,113,0.8)]' : 'bg-surface-container-high'}`}></div>
                )}
             </div>
           </div>
@@ -190,16 +190,16 @@ export function Dashboard() {
       </div>
 
       {/* Main Visualization Card */}
-      <section className="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+      <section className="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden shadow-sm mt-8">
         <div className="p-5 border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between bg-surface-container-low gap-4">
           <h3 className="font-headline text-lg font-semibold flex items-center gap-2 text-white">
             <span className="material-symbols-outlined text-primary text-[20px]">analytics</span>
             Request Throughput (ms)
           </h3>
           <div className="flex items-center gap-3">
-             <div className="relative w-full sm:w-56">
+             <div className="relative w-full sm:w-64">
                 <select 
-                  className="w-full bg-surface-container-high border border-outline-variant text-white text-sm font-medium rounded-lg pl-3 pr-8 py-2 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none appearance-none cursor-pointer hover:bg-surface-container-high"
+                  className="w-full bg-surface-container-high border border-outline-variant text-white text-sm font-medium rounded-lg pl-3 pr-8 py-2 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none appearance-none cursor-pointer hover:bg-surface-container-highest shadow-sm"
                   value={selectedProjectId}
                   onChange={(e) => setSelectedProjectId(e.target.value)}
                 >
@@ -215,64 +215,80 @@ export function Dashboard() {
         
         <div className="p-8 h-[350px] w-full bg-surface relative">
            {isChartLoading ? (
-             <div className="w-full h-full flex flex-col items-center justify-center text-on-surface-variant">
-               <span className="material-symbols-outlined animate-spin text-[32px] text-primary mb-3">progress_activity</span>
-               <p className="text-sm">Loading throughput data...</p>
-             </div>
+              <div className="w-full h-full flex flex-col items-center justify-center">
+                <div className="flex items-end gap-2 h-full w-full opacity-20 max-w-4xl mx-auto">
+                  {Array.from({ length: 16 }).map((_, i) => (
+                    <Skeleton key={i} className="w-full rounded-t-sm" style={{ height: `${Math.random() * 60 + 20}%` }} />
+                  ))}
+                </div>
+              </div>
            ) : chartData.length === 0 ? (
-             <div className="w-full h-full flex flex-col items-center justify-center text-on-surface-variant">
-               <span className="material-symbols-outlined text-[40px] opacity-20 mb-3">bar_chart</span>
-               <p className="text-sm">No latency data recorded yet for this project.</p>
+             <div className="flex items-center justify-center h-full">
+               <EmptyState 
+                  icon="bar_chart" 
+                  title="No Data Available" 
+                  description="No latency data recorded yet for this project." 
+               />
              </div>
            ) : (
              <ResponsiveContainer width="100%" height="100%">
-               <BarChart data={chartData} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
+               <AreaChart data={chartData} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
                  <defs>
-                    <linearGradient id="colorLatency" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#c0c1ff" stopOpacity={0.8}/>
-                      <stop offset="100%" stopColor="#c0c1ff" stopOpacity={0.1}/>
+                    <linearGradient id="colorLatencyDash" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="rgb(192 193 255)" stopOpacity={0.5}/>
+                      <stop offset="95%" stopColor="rgb(192 193 255)" stopOpacity={0}/>
                     </linearGradient>
+                    <filter id="glowDash" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="4" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
                  </defs>
-                 <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2d" vertical={false} opacity={0.5} />
+                 <CartesianGrid strokeDasharray="3 3" stroke="rgb(70 69 84)" vertical={false} opacity={0.3} />
                  <XAxis 
                    dataKey="time" 
-                   stroke="#908fa0" 
+                   stroke="rgb(144 143 160)" 
                    fontSize={11} 
+                   fontFamily="JetBrains Mono"
                    tickLine={false} 
                    axisLine={false} 
                    dy={15}
                    minTickGap={30}
                  />
                  <YAxis 
-                   stroke="#908fa0" 
+                   stroke="rgb(144 143 160)" 
                    fontSize={11} 
+                   fontFamily="JetBrains Mono"
                    tickLine={false} 
                    axisLine={false} 
                    tickFormatter={(val) => `${val}ms`}
                    dx={-15}
                  />
-                 <Tooltip content={<CustomTooltip />} cursor={{ fill: '#ffffff', opacity: 0.03 }} />
-                 <Bar 
+                 <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgb(70 69 84)', strokeWidth: 1, strokeDasharray: '4 4' }} />
+                 <Area 
+                   type="monotone" 
                    dataKey="latency" 
-                   fill="url(#colorLatency)" 
-                   radius={[4, 4, 0, 0]}
-                   maxBarSize={40}
-                   animationDuration={1500}
+                   stroke="rgb(192 193 255)" 
+                   strokeWidth={3}
+                   fillOpacity={1} 
+                   fill="url(#colorLatencyDash)"
+                   activeDot={{ r: 6, fill: "rgb(192 193 255)", stroke: 'rgb(19 19 22)', strokeWidth: 3 }}
+                   animationDuration={1000}
+                   style={{ filter: 'url(#glowDash)' }}
                  />
-               </BarChart>
+               </AreaChart>
              </ResponsiveContainer>
            )}
         </div>
       </section>
 
-      {/* Recent Logs List View */}
-      <section className="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+      {/* Recent Deployments List View */}
+      <section className="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden shadow-sm mt-8">
         <div className="p-5 border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
           <h3 className="font-headline text-lg font-semibold flex items-center gap-2 text-white">
-            <span className="material-symbols-outlined text-on-surface-variant text-[20px]">list_alt</span>
+            <span className="material-symbols-outlined text-emerald-400 text-[20px]">list_alt</span>
             Recent Deployments
           </h3>
-          <Link to="/projects" className="text-sm font-medium text-white hover:bg-surface-container-high px-3 py-1.5 rounded-lg border border-outline-variant/50 transition-colors flex items-center gap-1">
+          <Link to="/projects" className="text-sm font-medium text-white hover:bg-surface-container-high px-4 py-1.5 rounded-lg border border-outline-variant/50 transition-colors flex items-center gap-1 shadow-sm">
             View All
             <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
           </Link>
@@ -280,7 +296,7 @@ export function Dashboard() {
         
         <div className="flex flex-col">
            {isProjectsLoading ? (
-             Array.from({ length: 3 }).map((_, i) => (
+             Array.from({ length: 5 }).map((_, i) => (
                <div key={i} className="flex items-center justify-between p-4 border-b border-outline-variant/50">
                  <div className="flex items-center gap-4 w-full max-w-sm">
                    <Skeleton className="w-10 h-10 rounded-full shrink-0" />
@@ -299,32 +315,34 @@ export function Dashboard() {
                </div>
              ))
           ) : projects.length === 0 ? (
-             <EmptyState 
-               icon="folder_off"
-               title="No Projects Yet"
-               description="You haven't added any projects to monitor."
-               action={
-                 <Link to="/projects" className="px-6 py-2.5 bg-surface-container-low border border-outline-variant text-white text-sm font-semibold rounded-lg hover:bg-surface-container-high transition-colors">
-                   Create Your First Project
-                 </Link>
-               }
-             />
+             <div className="py-12">
+               <EmptyState 
+                 icon="folder_off"
+                 title="No Projects Yet"
+                 description="You haven't added any projects to monitor."
+                 action={
+                   <Link to="/projects" className="px-6 py-2.5 bg-gradient-to-r from-primary to-accent text-background text-sm font-bold rounded-lg hover:-translate-y-0.5 transition-all shadow-[0_0_15px_rgba(192,193,255,0.3)]">
+                     Create Your First Project
+                   </Link>
+                 }
+               />
+             </div>
           ) : (
-            projects.slice(0, 5).map((project, index) => (
+            projects.slice(0, 8).map((project, index) => (
               <div 
                 key={project._id} 
                 className={cn(
-                  "flex items-center justify-between p-4 hover:bg-surface-container-high/50 transition-colors group",
-                  index !== projects.slice(0, 5).length - 1 && "border-b border-outline-variant/50"
+                  "flex items-center justify-between p-4 hover:bg-surface-container-high/50 transition-all group hover:shadow-lg hover:z-10 relative",
+                  index !== projects.slice(0, 8).length - 1 && "border-b border-outline-variant/50"
                 )}
               >
                 {/* Left Side: Icon + Name */}
                 <div className="flex items-center gap-4 min-w-0">
-                   <div className="w-10 h-10 shrink-0 bg-surface-container-highest border border-outline-variant rounded-full flex items-center justify-center text-white shadow-inner">
+                   <div className="w-10 h-10 shrink-0 bg-surface-container-highest border border-outline-variant rounded-full flex items-center justify-center text-white shadow-inner group-hover:border-primary/50 transition-colors">
                      {project.projectType === 'API Endpoint' ? (
-                        <span className="material-symbols-outlined text-[20px]">api</span>
+                        <span className="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">api</span>
                      ) : (
-                        <span className="material-symbols-outlined text-[20px]">web</span>
+                        <span className="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">web</span>
                      )}
                    </div>
                    <div className="flex flex-col min-w-0">
@@ -347,17 +365,17 @@ export function Dashboard() {
                    </div>
 
                    <div className={cn(
-                      "flex items-center gap-2 px-3 py-1.5 rounded-full border shadow-sm",
-                      project.currentStatus === 'online' ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-400" : 
-                      project.currentStatus === 'offline' ? "border-red-500/20 bg-red-500/10 text-red-400" : 
-                      "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-[0_0_10px_rgba(0,0,0,0.1)] backdrop-blur-md",
+                      project.currentStatus === 'online' ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : 
+                      project.currentStatus === 'offline' ? "border-red-500/30 bg-red-500/10 text-red-400" : 
+                      "border-yellow-500/30 bg-yellow-500/10 text-yellow-400"
                     )}>
                       <span className={cn(
-                        "w-2 h-2 rounded-full",
+                        "w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor]",
                         project.currentStatus === 'online' ? "bg-emerald-400" : 
                         project.currentStatus === 'offline' ? "bg-red-400" : "bg-yellow-400 animate-pulse"
                       )}></span>
-                      <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">
+                      <span className="text-[10px] font-bold uppercase tracking-wider hidden sm:inline">
                         {project.currentStatus === 'online' ? 'Operational' : project.currentStatus}
                       </span>
                    </div>

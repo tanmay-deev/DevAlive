@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --color-primary: #c0c1ff;
-    --color-accent: #6366F1;
-    --color-surface-container-lowest: #0e0e11;
-    --color-surface-container-low: #1b1b1e;
-    --color-surface-container: #222225;
-    --color-surface-container-high: #2a2a2d;
-    --color-surface-container-highest: #333336;
-    --color-on-surface: #e4e1e6;
-    --color-on-surface-variant: #c7c4d7;
-    --color-outline: #908fa0;
-    --color-outline-variant: #464554;
-    --color-background: #0a0a0a;
-    --color-surface: #131316;
-    --color-card: #18181B;
-    --color-border: #27272A;
+    --color-primary: 192 193 255;
+    --color-accent: 99 102 241;
+    --color-surface-container-lowest: 14 14 17;
+    --color-surface-container-low: 27 27 30;
+    --color-surface-container: 34 34 37;
+    --color-surface-container-high: 42 42 45;
+    --color-surface-container-highest: 51 51 54;
+    --color-on-surface: 228 225 230;
+    --color-on-surface-variant: 199 196 215;
+    --color-outline: 144 143 160;
+    --color-outline-variant: 70 69 84;
+    --color-background: 10 10 10;
+    --color-surface: 19 19 22;
+    --color-card: 24 24 27;
+    --color-border: 39 39 42;
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-on-surface);
+    background-color: rgb(var(--color-background));
+    color: rgb(var(--color-on-surface));
     font-family: 'Inter', sans-serif;
   }
 }
@@ -52,24 +52,24 @@
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: rgb(var(--color-background));
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: rgb(var(--color-border));
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: rgb(var(--color-surface-container-highest));
 }
 
 input[type="checkbox"] {
-  background-color: #0a0a0a;
-  border-color: #27272a;
+  background-color: rgb(var(--color-background));
+  border-color: rgb(var(--color-border));
   border-radius: 0.25rem;
 }
 input[type="checkbox"]:checked {
-  background-color: #6366F1;
-  border-color: #6366F1;
+  background-color: rgb(var(--color-accent));
+  border-color: rgb(var(--color-accent));
 }
 html {
   scroll-behavior: smooth;

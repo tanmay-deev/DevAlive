@@ -194,14 +194,20 @@ export function Projects() {
         {/* Alerts Widget */}
         <div>
           <h3 className="text-sm font-semibold text-on-surface-variant tracking-wider mb-3 px-1">Alerts</h3>
-          <div className="bg-surface-container rounded-xl border border-outline-variant p-5 shadow-sm text-center">
-            <span className="material-symbols-outlined text-[32px] text-primary mb-3">notifications_active</span>
-            <h4 className="text-sm font-semibold text-white mb-1.5">Get alerted for anomalies</h4>
-            <p className="text-xs text-on-surface-variant mb-4 leading-relaxed">
-              Automatically monitor your projects for downtime and get notified on Discord or Email instantly.
+          <div className="bg-surface-container rounded-xl border border-outline-variant p-5 shadow-sm text-center relative overflow-hidden group">
+            {/* Subtle gradient glow */}
+            <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-primary/5 to-transparent opacity-50 pointer-events-none"></div>
+            
+            <div className="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:border-primary/50 transition-all duration-300 shadow-inner">
+              <span className="material-symbols-outlined text-[22px] text-primary">mark_email_read</span>
+            </div>
+            <h4 className="text-sm font-semibold text-white mb-2 tracking-tight">Email Alerts Active</h4>
+            <p className="text-xs text-on-surface-variant mb-5 leading-relaxed">
+              We automatically email you the moment any of your monitored projects experience downtime.
             </p>
-            <Link to="/settings" className="px-4 py-2 bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-white text-xs font-medium rounded-lg transition-colors inline-block">
-              Upgrade to Pro
+            <Link to="/settings" className="flex items-center justify-center gap-2 px-4 py-2 bg-surface-container-highest hover:bg-primary/10 hover:text-primary hover:border-primary/50 border border-outline-variant text-on-surface text-xs font-medium rounded-lg transition-all w-full">
+              <span className="material-symbols-outlined text-[16px]">tune</span>
+              Manage Preferences
             </Link>
           </div>
         </div>

@@ -9,6 +9,7 @@ export function DashboardLayout() {
   const { user, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   
   const navItems = [
@@ -54,7 +55,8 @@ export function DashboardLayout() {
 
       {/* SideNavBar Component */}
       <aside className={cn(
-        "h-screen w-[260px] fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant flex flex-col py-6 px-4 z-50 transition-transform duration-300 lg:translate-x-0",
+        "h-screen fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant flex flex-col py-6 px-4 z-50 transition-all duration-300 lg:translate-x-0",
+        isSidebarCollapsed ? "w-[88px]" : "w-[260px]",
         isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         {/* Brand Header */}
@@ -63,10 +65,12 @@ export function DashboardLayout() {
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center shadow-lg shadow-accent/20">
                <span className="material-symbols-outlined text-white text-[20px]">monitor_heart</span>
             </div>
-            <div>
-              <h1 className="font-headline font-bold text-xl text-primary tracking-tight leading-tight">DevAlive</h1>
-              <p className="font-mono text-[10px] text-on-surface-variant opacity-70 uppercase tracking-wider">Developer Console</p>
-            </div>
+            {!isSidebarCollapsed && (
+              <div>
+                <h1 className="font-headline font-bold text-xl text-primary tracking-tight leading-tight">DevAlive</h1>
+                <p className="font-mono text-[10px] text-on-surface-variant opacity-70 uppercase tracking-wider">Developer Console</p>
+              </div>
+            )}
           </Link>
           <button className="lg:hidden text-on-surface-variant hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>
             <span className="material-symbols-outlined">close</span>
@@ -95,8 +99,8 @@ export function DashboardLayout() {
                 <span className={cn("material-symbols-outlined text-[20px]", isActive ? "text-primary" : "")} style={{fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0"}}>
                   {item.icon}
                 </span>
-                <span className="font-medium text-sm">{item.name}</span>
-                {item.badge && (
+                {!isSidebarCollapsed && <span className="font-medium text-sm">{item.name}</span>}
+                {!isSidebarCollapsed && item.badge && (
                   <span className={cn(
                     "ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold",
                     "bg-primary text-background"
@@ -111,31 +115,40 @@ export function DashboardLayout() {
 
         {/* Sidebar Footer: Profile */}
         <div className="pt-6 border-t border-outline-variant mt-4">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low mb-3 border border-transparent hover:border-outline-variant transition-colors">
-            <div className="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden flex-shrink-0 flex items-center justify-center text-primary font-bold text-lg">
+          <div className={cn("flex items-center gap-3 p-3 rounded-xl bg-surface-container-low mb-3 border border-transparent hover:border-outline-variant transition-colors", isSidebarCollapsed ? "justify-center" : "")}>
+            <div className="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden flex-shrink-0 flex items-center justify-center text-primary font-bold text-lg cursor-pointer" title="Logout" onClick={isSidebarCollapsed ? () => logout() : undefined}>
               {user?.fullName?.charAt(0).toUpperCase() || 'U'}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm text-on-surface truncate">{user?.fullName || 'Developer'}</p>
-              <p className="text-xs text-on-surface-variant truncate">{user?.email || 'admin@devalive.com'}</p>
-            </div>
-            <button 
-              onClick={() => logout()}
-              className="text-on-surface-variant hover:text-error transition-colors p-1 rounded hover:bg-surface-container-high"
-              title="Logout"
-            >
-              <span className="material-symbols-outlined text-[18px]">logout</span>
-            </button>
+            {!isSidebarCollapsed && (
+              <>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm text-on-surface truncate">{user?.fullName || 'Developer'}</p>
+                  <p className="text-xs text-on-surface-variant truncate">{user?.email || 'admin@devalive.com'}</p>
+                </div>
+                <button 
+                  onClick={() => logout()}
+                  className="text-on-surface-variant hover:text-error transition-colors p-1 rounded hover:bg-surface-container-high"
+                  title="Logout"
+                >
+                  <span className="material-symbols-outlined text-[18px]">logout</span>
+                </button>
+              </>
+            )}
           </div>
-          <button className="flex items-center justify-between w-full px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all group">
-            <span className="text-xs font-medium">Collapse Sidebar</span>
-            <span className="material-symbols-outlined scale-90 group-hover:-translate-x-1 transition-transform">keyboard_double_arrow_left</span>
+          <button 
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="flex items-center justify-between w-full px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all group"
+          >
+            {!isSidebarCollapsed && <span className="text-xs font-medium">Collapse Sidebar</span>}
+            <span className={cn("material-symbols-outlined scale-90 transition-transform", isSidebarCollapsed ? "mx-auto rotate-180" : "group-hover:-translate-x-1")}>
+              keyboard_double_arrow_left
+            </span>
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 lg:ml-[260px] h-screen overflow-y-auto bg-background flex flex-col min-w-0">
+      <main className={cn("flex-1 h-screen overflow-y-auto bg-background flex flex-col min-w-0 transition-all duration-300", isSidebarCollapsed ? "lg:ml-[88px]" : "lg:ml-[260px]")}>
         
         {/* TopNavBar Component */}
         <header className="py-4 min-h-[72px] sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-outline-variant flex items-center justify-between px-4 lg:px-6">
@@ -173,7 +186,7 @@ export function DashboardLayout() {
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full border border-surface animate-pulse"></span>
               )}
             </Link>
-            <button className="hidden sm:block p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-white rounded-lg transition-colors scale-95 duration-150">
+            <button onClick={() => alert("Support & Documentation Center coming soon!")} title="Help Center" className="hidden sm:block p-2 text-on-surface-variant hover:bg-surface-container-low hover:text-white rounded-lg transition-colors scale-95 duration-150">
               <span className="material-symbols-outlined text-[20px]">help_outline</span>
             </button>
             

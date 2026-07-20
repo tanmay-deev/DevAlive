@@ -17,6 +17,14 @@ class AuthService {
     throw new Error(response.data.message || 'Login failed');
   }
 
+  async googleLogin(credential) {
+    const response = await apiClient.post('/auth/google', { credential });
+    if (response.data.success) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Google Login failed');
+  }
+
   async getMe() {
     const response = await apiClient.get('/auth/me');
     if (response.data.success) {

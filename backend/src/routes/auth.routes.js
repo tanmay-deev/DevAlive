@@ -9,6 +9,7 @@ import { authLimiter } from '../middleware/rateLimiter.middleware.js';
 
 router.post('/register', authLimiter, registerValidator, validate, authController.register);
 router.post('/login', authLimiter, loginValidator, validate, authController.login);
+router.post('/google', authLimiter, authController.googleLogin);
 router.post('/forgot-password', authLimiter, forgotPasswordValidator, validate, authController.forgotPassword);
 router.post('/reset-password/:token', authLimiter, resetPasswordValidator, validate, authController.resetPassword);
 router.get('/verify-email/:token', authLimiter, authController.verifyEmail);
