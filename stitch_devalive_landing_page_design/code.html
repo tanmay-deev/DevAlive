@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevAlive | Engineering High-Availability for Modern Developers</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Geist:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#68000a",
+                        "surface-tint": "#c0c1ff",
+                        "surface-container-low": "#1b1b1e",
+                        "on-secondary-fixed-variant": "#005236",
+                        "primary-container": "#8083ff",
+                        "surface-dim": "#131316",
+                        "tertiary-container": "#ff5451",
+                        "on-secondary-container": "#00311f",
+                        "on-background": "#e4e1e6",
+                        "surface-container-highest": "#353438",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdad7",
+                        "inverse-primary": "#494bd6",
+                        "on-primary-fixed": "#07006c",
+                        "surface-container-lowest": "#0e0e11",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-tertiary-container": "#5c0008",
+                        "on-tertiary-fixed": "#410004",
+                        "on-surface-variant": "#c7c4d7",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "tertiary": "#ffb3ad",
+                        "inverse-surface": "#e4e1e6",
+                        "on-primary": "#1000a9",
+                        "background": "#131316",
+                        "primary": "#c0c1ff",
+                        "inverse-on-surface": "#303033",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-container-high": "#2a2a2d",
+                        "outline": "#908fa0",
+                        "surface-bright": "#39393c",
+                        "on-surface": "#e4e1e6",
+                        "secondary": "#4edea3",
+                        "primary-fixed": "#e1e0ff",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "surface-variant": "#353438",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "on-secondary": "#003824",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "secondary-container": "#00a572",
+                        "surface-container": "#1f1f22",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "surface": "#131316",
+                        "outline-variant": "#464554",
+                        "on-secondary-fixed": "#002113",
+                        "on-primary-container": "#0d0096",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xxl": "48px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "sm": "12px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "label-sm": ["JetBrains Mono"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Geist"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.04em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #0A0A0A; color: #e4e1e6; }
+        .glass-card {
+            background: #18181B;
+            border: 1px solid #27272A;
+            border-radius: 16px;
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at top center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .status-up { background-color: rgba(78, 222, 163, 0.1); color: #4edea3; }
+        .status-down { background-color: rgba(255, 84, 81, 0.1); color: #ff5451; }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- TopAppBar (Shared Component Mapping) -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex justify-between items-center h-16 px-gutter max-w-container-max mx-auto">
+<div class="flex items-center gap-base">
+<img alt="DevAlive Logo" class="h-8 w-auto" src="data:image/png;base64,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"/>
+<span class="text-body-lg font-headline-lg font-bold text-on-background tracking-tight">DevAlive</span>
+</div>
+<nav class="hidden md:flex items-center gap-xl">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md" href="#">Features</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">How It Works</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Docs</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Pricing</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant font-label-md hover:text-primary transition-all">Login</button>
+<button class="bg-primary text-on-primary px-lg py-base rounded-lg font-label-md hover:scale-95 duration-150 ease-in-out">Get Started</button>
+</div>
+</div>
+</header>
+<main class="pt-24">
+<!-- Hero Section -->
+<section class="hero-gradient px-gutter py-xxl flex flex-col items-center text-center max-w-container-max mx-auto">
+<div class="max-w-4xl space-y-lg mb-xxl">
+<h1 class="font-display-lg text-display-lg text-on-background leading-tight">
+                    Keep Your Projects Alive. <br/>
+<span class="text-primary">Never Let Recruiters See a Dead Portfolio Again.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                    DevAlive continuously monitors your free-tier deployments, performs health checks, and sends instant alerts before recruiters even notice a cold start or sleep cycle.
+                </p>
+<div class="flex flex-col md:flex-row gap-md justify-center pt-md">
+<button class="bg-primary text-on-primary px-xl py-md rounded-lg font-headline-md hover:scale-95 transition-transform">Start Monitoring Free</button>
+<button class="border border-outline-variant text-on-surface px-xl py-md rounded-lg font-headline-md hover:bg-surface-container-high transition-all">View Documentation</button>
+</div>
+</div>
+<!-- Dashboard Preview Mockup -->
+<div class="w-full max-w-5xl glass-card p-base overflow-hidden border border-outline-variant shadow-2xl relative">
+<div class="flex h-[500px]">
+<!-- Mockup Sidebar -->
+<div class="w-16 md:w-48 border-r border-outline-variant p-md space-y-xl flex flex-col">
+<div class="flex gap-sm items-center">
+<div class="w-8 h-8 rounded bg-primary-container"></div>
+<span class="hidden md:block font-label-md">Workspace</span>
+</div>
+<div class="space-y-md">
+<div class="h-4 w-full bg-surface-container rounded"></div>
+<div class="h-4 w-3/4 bg-surface-container rounded opacity-50"></div>
+<div class="h-4 w-5/6 bg-surface-container rounded opacity-50"></div>
+</div>
+</div>
+<!-- Mockup Content -->
+<div class="flex-1 bg-surface-dim p-lg overflow-y-auto">
+<div class="flex justify-between items-center mb-xl">
+<h3 class="font-headline-md">Projects Dashboard</h3>
+<div class="px-md py-xs status-up text-[12px] font-label-sm rounded-full">System Normal</div>
+</div>
+<!-- Stat Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl">
+<div class="p-md glass-card bg-surface-container-low border-outline-variant">
+<span class="font-label-sm text-on-surface-variant block mb-xs">Active Monitors</span>
+<span class="font-headline-lg text-primary">12 / 12</span>
+</div>
+<div class="p-md glass-card bg-surface-container-low border-outline-variant">
+<span class="font-label-sm text-on-surface-variant block mb-xs">Average Uptime</span>
+<span class="font-headline-lg text-secondary">99.98%</span>
+</div>
+<div class="p-md glass-card bg-surface-container-low border-outline-variant">
+<span class="font-label-sm text-on-surface-variant block mb-xs">Alerts (24h)</span>
+<span class="font-headline-lg text-tertiary">0</span>
+</div>
+</div>
+<!-- Project List Mock -->
+<div class="glass-card bg-surface-container-lowest border-outline-variant overflow-hidden">
+<div class="p-md border-b border-outline-variant grid grid-cols-4 font-label-sm text-on-surface-variant">
+<span>Project Name</span>
+<span>Status</span>
+<span>Region</span>
+<span>Latency</span>
+</div>
+<div class="p-md grid grid-cols-4 items-center border-b border-outline-variant/50">
+<span class="font-label-md">E-commerce API</span>
+<div><span class="px-sm py-1 status-up text-[10px] rounded">Online</span></div>
+<span class="font-label-sm opacity-60">us-east-1</span>
+<span class="font-label-sm">42ms</span>
+</div>
+<div class="p-md grid grid-cols-4 items-center border-b border-outline-variant/50">
+<span class="font-label-md">Portfolio-v3</span>
+<div><span class="px-sm py-1 status-up text-[10px] rounded">Online</span></div>
+<span class="font-label-sm opacity-60">eu-west-2</span>
+<span class="font-label-sm">118ms</span>
+</div>
+<div class="p-md grid grid-cols-4 items-center">
+<span class="font-label-md">Bot-Service-1</span>
+<div><span class="px-sm py-1 status-down text-[10px] rounded">Sleeping</span></div>
+<span class="font-label-sm opacity-60">us-west-1</span>
+<span class="font-label-sm">---</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Trusted By Section -->
+<section class="border-y border-outline-variant py-xl bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto px-gutter flex flex-wrap justify-center gap-xl items-center opacity-60 grayscale">
+<span class="font-label-md">Trusted By:</span>
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined">school</span><span class="font-label-md">Student Developers</span></div>
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined">work</span><span class="font-label-md">Freelancers</span></div>
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined">engineering</span><span class="font-label-md">Software Engineers</span></div>
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined">person</span><span class="font-label-md">Portfolio Builders</span></div>
+</div>
+</section>
+<!-- Problem Section -->
+<section class="px-gutter py-xxl max-w-container-max mx-auto">
+<div class="text-center mb-xl">
+<h2 class="font-headline-lg text-headline-lg">The Free-Tier Problem</h2>
+<p class="text-on-surface-variant mt-xs">Infrastructure costs shouldn't kill your portfolio's first impression.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="glass-card p-xl hover:border-primary transition-colors group">
+<span class="material-symbols-outlined text-4xl text-primary mb-md block">bedtime</span>
+<h3 class="font-headline-md mb-sm">Render Sleeping</h3>
+<p class="text-on-surface-variant font-body-sm">Free instance types spin down after 15 minutes of inactivity, causing 30s+ wait times for visiting recruiters.</p>
+</div>
+<div class="glass-card p-xl hover:border-primary transition-colors group">
+<span class="material-symbols-outlined text-4xl text-primary mb-md block">ac_unit</span>
+<h3 class="font-headline-md mb-sm">Railway Cold Starts</h3>
+<p class="text-on-surface-variant font-body-sm">Trial credits and usage caps can unexpectedly pause your deployments when you're not looking.</p>
+</div>
+<div class="glass-card p-xl hover:border-primary transition-colors group">
+<span class="material-symbols-outlined text-4xl text-primary mb-md block">link_off</span>
+<h3 class="font-headline-md mb-sm">Inactive APIs</h3>
+<p class="text-on-surface-variant font-body-sm">Database connections on free tiers often drop, resulting in 500 errors when someone finally visits your site.</p>
+</div>
+</div>
+</section>
+<!-- Solution Section: How It Works -->
+<section class="px-gutter py-xxl bg-surface-container-low overflow-hidden relative">
+<div class="max-w-container-max mx-auto">
+<h2 class="font-headline-lg text-headline-lg mb-xxl text-center">How DevAlive Works</h2>
+<div class="relative">
+<!-- Progress Line -->
+<div class="absolute top-8 left-0 w-full h-[2px] bg-outline-variant hidden md:block"></div>
+<div class="grid grid-cols-1 md:grid-cols-6 gap-lg relative z-10">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold mb-md">1</div>
+<h4 class="font-label-md mb-xs">Add Project</h4>
+<p class="text-body-sm text-on-surface-variant">Simple URL input</p>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border-2 border-primary flex items-center justify-center text-primary font-bold mb-md">2</div>
+<h4 class="font-label-md mb-xs">Auto Monitoring</h4>
+<p class="text-body-sm text-on-surface-variant">Config-free setup</p>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border-2 border-primary flex items-center justify-center text-primary font-bold mb-md">3</div>
+<h4 class="font-label-md mb-xs">Health Checks</h4>
+<p class="text-body-sm text-on-surface-variant">24/7 pings</p>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border-2 border-primary flex items-center justify-center text-primary font-bold mb-md">4</div>
+<h4 class="font-label-md mb-xs">Detection</h4>
+<p class="text-body-sm text-on-surface-variant">Instant outage catch</p>
+</div>
+<!-- Step 5 -->
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border-2 border-primary flex items-center justify-center text-primary font-bold mb-md">5</div>
+<h4 class="font-label-md mb-xs">Real-time Alerts</h4>
+<p class="text-body-sm text-on-surface-variant">Discord/Email</p>
+</div>
+<!-- Step 6 -->
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border-2 border-primary flex items-center justify-center text-primary font-bold mb-md">6</div>
+<h4 class="font-label-md mb-xs">Analytics</h4>
+<p class="text-body-sm text-on-surface-variant">Reliability reports</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Grid -->
+<section class="px-gutter py-xxl max-w-container-max mx-auto">
+<h2 class="font-headline-lg text-headline-lg mb-xl">Production-Grade Features</h2>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+<div class="glass-card p-lg hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-primary mb-sm">monitor_heart</span>
+<h5 class="font-headline-md text-[18px]">Health Checks</h5>
+<p class="text-on-surface-variant font-body-sm">Deep inspection of HTTP status codes and response headers.</p>
+</div>
+<div class="glass-card p-lg hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-primary mb-sm">timer</span>
+<h5 class="font-headline-md text-[18px]">Uptime tracking</h5>
+<p class="text-on-surface-variant font-body-sm">Precision tracking with historical data for up to 90 days.</p>
+</div>
+<div class="glass-card p-lg hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-primary mb-sm">bar_chart</span>
+<h5 class="font-headline-md text-[18px]">Analytics</h5>
+<p class="text-on-surface-variant font-body-sm">Visual reports on your project's reliability over time.</p>
+</div>
+<div class="glass-card p-lg hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-primary mb-sm">notifications_active</span>
+<h5 class="font-headline-md text-[18px]">Notifications</h5>
+<p class="text-on-surface-variant font-body-sm">Connect via Webhooks, Slack, Discord, or Email.</p>
+</div>
+<div class="glass-card p-lg hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-primary mb-sm">article</span>
+<h5 class="font-headline-md text-[18px]">Global Logs</h5>
+<p class="text-on-surface-variant font-body-sm">Detailed logs of every ping and response failure.</p>
+</div>
+<div class="glass-card p-lg hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-primary mb-sm">dashboard</span>
+<h5 class="font-headline-md text-[18px]">Dashboard</h5>
+<p class="text-on-surface-variant font-body-sm">Unified view for all your microservices and sites.</p>
+</div>
+<div class="glass-card p-lg hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-primary mb-sm">bolt</span>
+<h5 class="font-headline-md text-[18px]">Response Time</h5>
+<p class="text-on-surface-variant font-body-sm">Measure and optimize latencies across global regions.</p>
+</div>
+<div class="glass-card p-lg hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-primary mb-sm">hub</span>
+<h5 class="font-headline-md text-[18px]">Status Pages</h5>
+<p class="text-on-surface-variant font-body-sm">Public pages to show off your project's 100% uptime.</p>
+</div>
+</div>
+</section>
+<!-- Dashboard Showcase -->
+<section class="px-gutter py-xxl bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row items-center gap-xxl">
+<div class="flex-1 space-y-lg">
+<h2 class="font-display-lg text-headline-lg">Enterprise Visibility for Individual Projects.</h2>
+<p class="text-on-surface-variant font-body-lg">Get the same monitoring fidelity used by big tech, tailored for your portfolio. Track cold starts, identify regional bottlenecks, and ensure your data is always ready when that high-value recruiter clicks your link.</p>
+<ul class="space-y-md">
+<li class="flex items-center gap-md"><span class="material-symbols-outlined text-secondary">check_circle</span><span class="font-body-md">Multi-region latency monitoring</span></li>
+<li class="flex items-center gap-md"><span class="material-symbols-outlined text-secondary">check_circle</span><span class="font-body-md">Customizable ping intervals</span></li>
+<li class="flex items-center gap-md"><span class="material-symbols-outlined text-secondary">check_circle</span><span class="font-body-md">Advanced keyword detection in responses</span></li>
+</ul>
+</div>
+<div class="flex-1 relative">
+<div class="glass-card p-md shadow-2xl border-outline-variant bg-surface relative z-10">
+<div class="p-md border-b border-outline-variant flex justify-between">
+<span class="font-label-md">Detailed Analytics: project-alpha-api</span>
+<span class="font-label-sm text-secondary">Live</span>
+</div>
+<div class="p-lg space-y-xl">
+<div class="flex items-end gap-1 h-32">
+<!-- Spark Bars -->
+<div class="w-full bg-secondary h-[80%] rounded-sm opacity-20"></div>
+<div class="w-full bg-secondary h-[90%] rounded-sm opacity-40"></div>
+<div class="w-full bg-secondary h-[100%] rounded-sm opacity-60"></div>
+<div class="w-full bg-secondary h-[85%] rounded-sm opacity-40"></div>
+<div class="w-full bg-secondary h-[95%] rounded-sm opacity-80"></div>
+<div class="w-full bg-secondary h-[100%] rounded-sm opacity-100"></div>
+<div class="w-full bg-error h-[40%] rounded-sm"></div>
+<div class="w-full bg-secondary h-[90%] rounded-sm opacity-40"></div>
+<div class="w-full bg-secondary h-[100%] rounded-sm opacity-60"></div>
+<div class="w-full bg-secondary h-[95%] rounded-sm opacity-80"></div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-surface-container-high rounded-lg border border-outline-variant">
+<span class="font-label-sm opacity-50 block">P95 Latency</span>
+<span class="font-headline-md">142ms</span>
+</div>
+<div class="p-md bg-surface-container-high rounded-lg border border-outline-variant">
+<span class="font-label-sm opacity-50 block">Total Requests</span>
+<span class="font-headline-md">24.5k</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative blur -->
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-primary/20 blur-3xl rounded-full"></div>
+</div>
+</div>
+</section>
+<!-- Why DevAlive -->
+<section class="px-gutter py-xxl max-w-container-max mx-auto text-center">
+<h2 class="font-headline-lg text-headline-lg mb-xxl">Built by Developers, for Developers.</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-xl">
+<div class="space-y-md">
+<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mx-auto">
+<span class="material-symbols-outlined">code</span>
+</div>
+<h3 class="font-headline-md">Developer Focused</h3>
+<p class="text-on-surface-variant font-body-sm px-md">Integrated with your workflow. Simple API access and zero-fluff metrics that actually matter.</p>
+</div>
+<div class="space-y-md">
+<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mx-auto">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<h3 class="font-headline-md">Simple Setup</h3>
+<p class="text-on-surface-variant font-body-sm px-md">Connect your projects in under 30 seconds. No complicated agents or SDKs required.</p>
+</div>
+<div class="space-y-md">
+<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mx-auto">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<h3 class="font-headline-md">Reliable Monitoring</h3>
+<p class="text-on-surface-variant font-body-sm px-md">Multi-layered verification avoids false positives and ensures you only get paged when it's real.</p>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="px-gutter py-xxl">
+<div class="max-w-container-max mx-auto bg-primary text-on-primary rounded-xxl p-xxl text-center relative overflow-hidden">
+<div class="relative z-10 space-y-lg">
+<h2 class="font-display-lg text-headline-lg">Protect Your Projects Before <br/> Recruiters Visit Them.</h2>
+<p class="font-body-lg max-w-xl mx-auto opacity-90">Join 5,000+ developers ensuring their work is always accessible. Start for free, upgrade as you grow.</p>
+<button class="bg-on-primary text-primary px-xxl py-lg rounded-xl font-headline-md hover:scale-105 transition-transform">Start Monitoring Free</button>
+</div>
+<!-- Abstract visual decoration -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-white/10 -mr-32 -mt-32 rounded-full"></div>
+<div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 -ml-24 -mb-24 rounded-full"></div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component Mapping) -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-xl py-xxl px-gutter max-w-container-max mx-auto">
+<div class="space-y-md">
+<div class="flex items-center gap-base">
+<img alt="DevAlive Logo" class="h-6 w-auto" src="data:image/png;base64,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"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">DevAlive</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-80 leading-relaxed">
+                    © 2024 DevAlive. Engineering high-availability for the modern developer.
+                </p>
+</div>
+<div>
+<h6 class="font-label-md text-label-md text-primary mb-md">Product</h6>
+<ul class="space-y-sm">
+<li><a class="text-on-surface-variant hover:text-primary font-body-sm hover:underline decoration-primary underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">Features</a></li>
+<li><a class="text-on-surface-variant hover:text-primary font-body-sm hover:underline decoration-primary underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">Documentation</a></li>
+<li><a class="text-on-surface-variant hover:text-primary font-body-sm hover:underline decoration-primary underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">API Reference</a></li>
+</ul>
+</div>
+<div>
+<h6 class="font-label-md text-label-md text-primary mb-md">Resources</h6>
+<ul class="space-y-sm">
+<li><a class="text-on-surface-variant hover:text-primary font-body-sm hover:underline decoration-primary underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">Status Page</a></li>
+<li><a class="text-on-surface-variant hover:text-primary font-body-sm hover:underline decoration-primary underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">Privacy Policy</a></li>
+<li><a class="text-on-surface-variant hover:text-primary font-body-sm hover:underline decoration-primary underline-offset-4 opacity-80 hover:opacity-100 transition-all" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h6 class="font-label-md text-label-md text-primary mb-md">Newsletter</h6>
+<p class="font-body-sm text-on-surface-variant mb-md opacity-80">Get technical updates directly in your inbox.</p>
+<div class="flex">
+<input class="bg-surface-container-high border-outline-variant text-on-surface p-2 rounded-l-md w-full focus:ring-primary focus:border-primary" placeholder="email@example.com" type="email"/>
+<button class="bg-primary text-on-primary px-md rounded-r-md">Join</button>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions and subtle scroll effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+                observer.observe(section);
+            });
+        });
+    </script>
+</body></html>

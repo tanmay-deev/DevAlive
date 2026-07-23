@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        .active-nav-indicator {
+            position: absolute;
+            left: 0;
+            width: 3px;
+            height: 16px;
+            background-color: #6366F1;
+            border-radius: 0 4px 4px 0;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272A;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3F3F46;
+        }
+        .glass-header {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#c0c1ff",
+                      "primary-fixed": "#e1e0ff",
+                      "inverse-surface": "#e4e1e6",
+                      "outline-variant": "#464554",
+                      "on-secondary": "#003824",
+                      "on-error": "#690005",
+                      "tertiary-fixed-dim": "#ffb3ad",
+                      "on-background": "#e4e1e6",
+                      "background": "#131316",
+                      "secondary": "#4edea3",
+                      "outline": "#908fa0",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "on-surface-variant": "#c7c4d7",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "error": "#ffb4ab",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed": "#410004",
+                      "surface-bright": "#39393c",
+                      "surface-container-lowest": "#0e0e11",
+                      "primary": "#c0c1ff",
+                      "on-tertiary-container": "#5c0008",
+                      "on-secondary-container": "#00311f",
+                      "surface-dim": "#131316",
+                      "surface-container-highest": "#353438",
+                      "surface": "#131316",
+                      "secondary-container": "#00a572",
+                      "on-tertiary": "#68000a",
+                      "surface-container-low": "#1b1b1e",
+                      "surface-variant": "#353438",
+                      "on-secondary-fixed": "#002113",
+                      "on-primary-container": "#0d0096",
+                      "tertiary": "#ffb3ad",
+                      "secondary-fixed": "#6ffbbe",
+                      "on-primary-fixed": "#07006c",
+                      "on-error-container": "#ffdad6",
+                      "on-surface": "#e4e1e6",
+                      "on-secondary-fixed-variant": "#005236",
+                      "surface-container": "#1f1f22",
+                      "inverse-on-surface": "#303033",
+                      "tertiary-fixed": "#ffdad7",
+                      "secondary-fixed-dim": "#4edea3",
+                      "primary-container": "#8083ff",
+                      "surface-container-high": "#2a2a2d",
+                      "inverse-primary": "#494bd6",
+                      "on-tertiary-fixed-variant": "#930013",
+                      "on-primary": "#1000a9",
+                      "tertiary-container": "#ff5451"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "xxl": "48px",
+                      "base": "8px",
+                      "container-max": "1280px",
+                      "lg": "24px",
+                      "gutter": "24px",
+                      "sm": "12px",
+                      "md": "16px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "headline-md": ["Geist"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "body-md": ["Inter"],
+                      "headline-lg": ["Geist"],
+                      "headline-lg-mobile": ["Geist"],
+                      "display-lg": ["Geist"],
+                      "label-md": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-[260px] fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant flex flex-col py-lg px-md z-50">
+<!-- Brand Header -->
+<div class="flex items-center gap-sm mb-xxl">
+<img alt="DevAlive Logo" class="w-8 h-8 rounded-lg shadow-sm" src="https://lh3.googleusercontent.com/aida/AP1WRLu_oXEEyrNs613MeLyqtoHsN6TMU5CHg7wHb5KAIJ_PDRst7wpuqE_LD80B5kfmtUStvG-tHloIzcrkx-qUULlpxvTFBKkrSKdG7Bkl_YAySgQXGGBrDXc0NvwQ05Dnf49B3DyVkrRKzR40bW654ZOcgp8s9Bt1rbAc9sxHPsg5GzOaU2uKhJLILJ1hQ2jJi_OWckmDtXHsXWIkodlYgh6WHv9ZN1QFoHrQZb9fvo28CNQodhdpHy4Y1w"/>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary tracking-tight leading-tight">DevAlive</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Developer Console</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 space-y-1">
+<!-- Dashboard (Active) -->
+<a class="relative flex items-center gap-md px-md py-sm bg-primary-container text-on-primary-container font-bold rounded-lg transition-all duration-200 ease-in-out group" href="#">
+<div class="active-nav-indicator"></div>
+<span class="material-symbols-outlined text-primary">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<!-- Projects -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-body-md">Projects</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-body-md">Analytics</span>
+</a>
+<!-- Monitoring Logs -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-body-md">Monitoring Logs</span>
+</a>
+<!-- Notifications -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-md">Notifications</span>
+<span class="ml-auto bg-primary text-on-primary text-[10px] px-1.5 py-0.5 rounded-full font-bold">4</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<!-- Sidebar Footer: Profile -->
+<div class="pt-lg border-t border-outline-variant mt-auto">
+<div class="flex items-center gap-md p-sm rounded-xl bg-surface-container-low mb-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a software developer with a focused expression, wearing a dark hoodie. The lighting is dramatic and cinematic with deep shadows and soft indigo rim light, set against a dark architectural background consistent with a high-end tech workspace aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRPCTKgnJg1CknX513E4Mlx1cchaiSonx2LE4mwxsjUvlgQ0sqKbPjFMkN_tHCkHTt-IIn_LGkyFJNhTS8IhhGVheq0RKjYrt7Dukb9_A26SM02SiqRgZjAajSRO-kYzXgOz0dz4rtG9OAZoowc9c3pBYBXkRKMCMxYo_EZ_UlLtKO3KtH4ANHl9pz7tWqHoKBzMKE2ApHhxKlaayBAsbfakL-PW1x-hQpSg-L5PttpYYpmPnvbmLa"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-label-md text-on-surface truncate">John Doe</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">john@devalive.io</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors p-1">
+<span class="material-symbols-outlined">logout</span>
+</button>
+</div>
+<button class="flex items-center justify-between w-full px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all">
+<span class="font-label-sm text-label-sm">Collapse Sidebar</span>
+<span class="material-symbols-outlined scale-90">keyboard_double_arrow_left</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-[260px] h-screen overflow-y-auto bg-background">
+<!-- TopNavBar Component -->
+<header class="h-16 sticky top-0 z-40 glass-header bg-surface/80 border-b border-outline-variant flex items-center justify-between px-lg">
+<!-- Left: Breadcrumb -->
+<div class="flex items-center gap-sm">
+<nav class="flex items-center text-on-surface-variant font-label-md text-label-md">
+<span class="hover:text-primary cursor-pointer transition-colors">Dashboard</span>
+<span class="material-symbols-outlined scale-75 opacity-40 mx-xs">chevron_right</span>
+<span class="text-on-surface font-medium">Overview</span>
+</nav>
+</div>
+<!-- Center: Global Search -->
+<div class="hidden md:flex flex-1 max-w-md mx-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-16 py-1.5 font-body-sm text-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-on-surface" placeholder="Search projects..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-50">
+<kbd class="px-1.5 py-0.5 text-[10px] font-sans border border-outline-variant rounded bg-surface-container-high">Ctrl</kbd>
+<kbd class="px-1.5 py-0.5 text-[10px] font-sans border border-outline-variant rounded bg-surface-container-high">K</kbd>
+</div>
+</div>
+</div>
+<!-- Right: Actions -->
+<div class="flex items-center gap-md">
+<button class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors scale-95 duration-150">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-surface"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors scale-95 duration-150">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full border border-outline-variant overflow-hidden cursor-pointer hover:ring-2 ring-primary/20 transition-all">
+<img class="w-full h-full object-cover" data-alt="A close-up shot of a modern, sleek user avatar placeholder with a minimalist gradient background of deep indigo and violet colors, matching a dark-themed developer dashboard interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS6jkLq1Fq6N787hyR5uqMeCxSdFT-AS-LZumurXinn-zKq5IVhbPzQr0DBOBNOTriL7kCcbkLkl6t77BnDcfyHiw-GEzvBtLB68Yu5m7GQuB1QXV56fKsTYCcpNvbn1KJ85WJRIZVVwd_lSXm4-7VyLoOb0y-lYYTafgddANqXuKAjJtG7Z9P-3yP0xA-jxV8jb5OhtCGbVzrJ7Z-QVMcJR6_Jyx_OElg_Pp-Hf_naueJFPk3cnYm"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-xl space-y-xl max-w-7xl mx-auto">
+<header class="flex items-end justify-between">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Dashboard Overview</h2>
+<p class="text-on-surface-variant font-body-md">Monitoring all system instances across 4 regions.</p>
+</div>
+<button class="px-md py-base bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-sm shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined scale-90">add</span>
+                        New Deployment
+                    </button>
+</header>
+<!-- Bento Grid / Stats Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container p-md rounded-xl border border-outline-variant group hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start mb-md">
+<div class="p-2 bg-surface-container-high rounded-lg text-primary">
+<span class="material-symbols-outlined">speed</span>
+</div>
+<span class="text-secondary font-label-sm text-label-sm flex items-center gap-xs">
+<span class="material-symbols-outlined scale-75">trending_up</span>
+                                +12.5%
+                            </span>
+</div>
+<div class="h-4 w-24 bg-surface-container-highest rounded mb-xs animate-pulse"></div>
+<div class="h-8 w-32 bg-surface-container-highest rounded animate-pulse opacity-60"></div>
+<div class="mt-md h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3 rounded-full"></div>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container p-md rounded-xl border border-outline-variant group hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start mb-md">
+<div class="p-2 bg-surface-container-high rounded-lg text-secondary">
+<span class="material-symbols-outlined">dns</span>
+</div>
+<span class="text-on-surface-variant font-label-sm text-label-sm">Active Nodes</span>
+</div>
+<div class="h-4 w-24 bg-surface-container-highest rounded mb-xs animate-pulse"></div>
+<div class="h-8 w-32 bg-surface-container-highest rounded animate-pulse opacity-60"></div>
+<div class="mt-md flex gap-xs">
+<div class="h-4 w-full bg-surface-container-highest rounded animate-pulse"></div>
+<div class="h-4 w-full bg-surface-container-highest rounded animate-pulse delay-75"></div>
+<div class="h-4 w-full bg-surface-container-highest rounded animate-pulse delay-150"></div>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container p-md rounded-xl border border-outline-variant group hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start mb-md">
+<div class="p-2 bg-surface-container-high rounded-lg text-tertiary">
+<span class="material-symbols-outlined">security</span>
+</div>
+<span class="text-error font-label-sm text-label-sm flex items-center gap-xs">
+<span class="material-symbols-outlined scale-75">error</span>
+                                2 Alerts
+                            </span>
+</div>
+<div class="h-4 w-24 bg-surface-container-highest rounded mb-xs animate-pulse"></div>
+<div class="h-8 w-32 bg-surface-container-highest rounded animate-pulse opacity-60"></div>
+<div class="mt-md h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container w-1/4 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Main Visualization Card -->
+<section class="bg-surface-container rounded-xl border border-outline-variant overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
+<h3 class="font-headline-md text-body-lg font-semibold flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                            Request Throughput (ms)
+                        </h3>
+<div class="flex items-center gap-sm">
+<div class="flex bg-surface-container-highest p-0.5 rounded-lg border border-outline-variant">
+<button class="px-3 py-1 bg-surface-container-low text-on-surface rounded-md font-label-sm text-label-sm shadow-sm">1h</button>
+<button class="px-3 py-1 text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface">24h</button>
+<button class="px-3 py-1 text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface">7d</button>
+</div>
+</div>
+</div>
+<div class="p-xl h-[400px] flex items-end gap-2">
+<!-- Skeleton Bars -->
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 45%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 60%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 85%;"></div>
+<div class="flex-1 bg-primary/40 rounded-t-lg transition-all duration-500 border-t-2 border-primary" style="height: 70%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 50%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 30%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 55%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 90%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 65%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 40%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 55%;"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-lg transition-all duration-500" style="height: 75%;"></div>
+</div>
+</section>
+<!-- Recent Logs Table Skeleton -->
+<section class="bg-surface-container rounded-xl border border-outline-variant overflow-hidden mb-xxl">
+<div class="p-lg border-b border-outline-variant">
+<h3 class="font-headline-md text-body-lg font-semibold flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">list_alt</span>
+                            Recent Monitoring Logs
+                        </h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant">Timestamp</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant">Resource</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant">Event</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-high/50 transition-colors">
+<td class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant">2023-11-20 14:23:01</td>
+<td class="px-lg py-md font-label-md text-label-md text-primary">api-gateway-01</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface">Inbound connection established</td>
+<td class="px-lg py-md">
+<span class="px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-wider">Operational</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-high/50 transition-colors">
+<td class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant">2023-11-20 14:22:58</td>
+<td class="px-lg py-md font-label-md text-label-md text-primary">auth-service-v2</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface">Token verification successful</td>
+<td class="px-lg py-md">
+<span class="px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-wider">Operational</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-high/50 transition-colors">
+<td class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant">2023-11-20 14:21:15</td>
+<td class="px-lg py-md font-label-md text-label-md text-primary">redis-cache-main</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface">High memory consumption detected</td>
+<td class="px-lg py-md">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container/10 text-tertiary-container text-[10px] font-bold uppercase tracking-wider">Warning</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-high/50 transition-colors">
+<td class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant">2023-11-20 14:20:44</td>
+<td class="px-lg py-md font-label-md text-label-md text-primary">load-balancer-east</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface">Traffic spike in US-EAST-1</td>
+<td class="px-lg py-md">
+<span class="px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-wider">Operational</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Micro-interaction for sidebar collapse and bar chart animation -->
+<script>
+        // Simple interactive bar height shuffle for 'live' feel
+        const bars = document.querySelectorAll('.flex-1.bg-surface-container-highest, .flex-1.bg-primary\\/40');
+        setInterval(() => {
+            bars.forEach(bar => {
+                const randomHeight = Math.floor(Math.random() * 60) + 20;
+                bar.style.height = `${randomHeight}%`;
+            });
+        }, 3000);
+
+        // Tooltip or search highlight simulation
+        const searchInput = document.querySelector('input[type="text"]');
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+    </script>
+</body></html>
